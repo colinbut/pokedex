@@ -2,11 +2,14 @@ package com.mycompany.pokdedex;
 
 import com.mycompany.pokdedex.core.service.AttackService;
 import com.mycompany.pokdedex.core.service.AttackServiceImpl;
+import com.mycompany.pokdedex.core.service.PokemonAttackService;
+import com.mycompany.pokdedex.core.service.PokemonAttackServiceImpl;
 import com.mycompany.pokdedex.core.service.PokemonService;
 import com.mycompany.pokdedex.core.service.PokemonServiceImpl;
 import com.mycompany.pokdedex.core.service.TypeService;
 import com.mycompany.pokdedex.core.service.TypeServiceImpl;
 import com.mycompany.pokdedex.db.AttackDao;
+import com.mycompany.pokdedex.db.PokemonAttackDao;
 import com.mycompany.pokdedex.db.PokemonDao;
 import com.mycompany.pokdedex.db.TypeDao;
 import com.mycompany.pokdedex.resources.PokemonResource;
@@ -43,12 +46,14 @@ public class PokedexApplication extends Application<PokedexConfiguration> {
         final PokemonDao pokemonDao = dbi.onDemand(PokemonDao.class);
         final TypeDao typeDao = dbi.onDemand(TypeDao.class);
         final AttackDao attackDao = dbi.onDemand(AttackDao.class);
+        final PokemonAttackDao pokemonAttackDao = dbi.onDemand(PokemonAttackDao.class);
 
         // manual Dependency Injection (for now at least)
         final TypeService typeService = new TypeServiceImpl(typeDao);
         final AttackService attackService = new AttackServiceImpl(attackDao);
+        final PokemonAttackService pokemonAttackService = new PokemonAttackServiceImpl(pokemonAttackDao);
 
-        PokemonService pokemonService = new PokemonServiceImpl(pokemonDao, attackService, typeService);
+        PokemonService pokemonService = new PokemonServiceImpl(pokemonDao, attackService, typeService, pokemonAttackService);
 
         // register!
         environment.jersey().register(new PokemonResource(pokemonService));
