@@ -6,10 +6,13 @@
 package com.mycompany.pokdedex.resources;
 
 import com.mycompany.pokdedex.api.PokemonRepresentation;
+import com.mycompany.pokdedex.core.service.PokemonService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -21,10 +24,20 @@ public class PokemonResource {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(PokemonResource.class);
 
+    private final PokemonService pokemonService;
+
+    public PokemonResource(PokemonService pokemonService) {
+        this.pokemonService = pokemonService;
+    }
+
+
     @GET
     public PokemonRepresentation getPokemon(@PathParam("id") int id) {
         LOGGER.info("Retrieving pokemon data for pokemon with pokemon id: {}", id);
         return new PokemonRepresentation();
     }
+
+
+
 
 }

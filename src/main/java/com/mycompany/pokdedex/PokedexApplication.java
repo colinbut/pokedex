@@ -1,5 +1,7 @@
 package com.mycompany.pokdedex;
 
+import com.mycompany.pokdedex.core.service.PokemonService;
+import com.mycompany.pokdedex.core.service.PokemonServiceImpl;
 import com.mycompany.pokdedex.db.PokemonDao;
 import com.mycompany.pokdedex.resources.PokemonResource;
 import io.dropwizard.Application;
@@ -32,7 +34,9 @@ public class PokedexApplication extends Application<PokedexConfiguration> {
         final DBI dbi = dbiFactory.build(environment, configuration.getDatasourceFactory(), "mysql");
         final PokemonDao pokemonDao = dbi.onDemand(PokemonDao.class);
 
-        environment.jersey().register(new PokemonResource());
+        PokemonService pokemonService = new PokemonServiceImpl(pokemonDao);
+
+        environment.jersey().register(new PokemonResource(pokemonService));
 
 
     }
