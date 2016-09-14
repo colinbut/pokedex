@@ -1,10 +1,21 @@
 package com.mycompany.pokdedex;
 
-import io.dropwizard.Configuration;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import org.hibernate.validator.constraints.*;
-import javax.validation.constraints.*;
+import io.dropwizard.Configuration;
+import io.dropwizard.db.DataSourceFactory;
+
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 
 public class PokedexConfiguration extends Configuration {
-    // TODO: implement service configuration
+
+    @NotNull
+    @Valid
+    @JsonProperty
+    private DataSourceFactory database = new DataSourceFactory();
+
+    public DataSourceFactory getDatasourceFactory() {
+        return database;
+    }
+
 }
