@@ -6,10 +6,13 @@
 package com.mycompany.pokdedex.resources;
 
 import com.mycompany.pokdedex.api.PokemonRepresentation;
+import com.mycompany.pokdedex.core.domain.Pokemon;
 import com.mycompany.pokdedex.core.service.PokemonService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
@@ -20,6 +23,7 @@ import javax.ws.rs.core.MediaType;
 
 @Path("/pokemon/{id}")
 @Produces(MediaType.APPLICATION_JSON)
+@Consumes(MediaType.APPLICATION_JSON)
 public class PokemonResource {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(PokemonResource.class);
@@ -37,7 +41,19 @@ public class PokemonResource {
         return new PokemonRepresentation();
     }
 
+    @PUT
+    public void addPokemon() {
+        pokemonService.saveNewPokemon(new Pokemon());
+    }
 
+    @POST
+    public void updatePokemon() {
+        throw new UnsupportedOperationException("Not Yet Implemented!");
+    }
 
+    @DELETE
+    public void deletePokemon(@PathParam("id") int id) {
+        throw new UnsupportedOperationException("Not Yet Implemented!");
+    }
 
 }

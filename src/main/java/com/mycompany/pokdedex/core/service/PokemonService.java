@@ -9,9 +9,12 @@ import com.mycompany.pokdedex.core.domain.Pokemon;
 
 public interface PokemonService {
 
-    @Deprecated
     void saveNewPokemon(Pokemon pokemon);
 
     Pokemon getPokemon(int id);
+
+    void updatePokemon(Pokemon pokemon);
+
+    void deletePokemon(int id);
 
 }
