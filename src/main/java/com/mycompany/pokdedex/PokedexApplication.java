@@ -1,5 +1,6 @@
 package com.mycompany.pokdedex;
 
+import com.mycompany.pokdedex.resources.PokemonResource;
 import io.dropwizard.Application;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
@@ -23,7 +24,7 @@ public class PokedexApplication extends Application<PokedexConfiguration> {
     @Override
     public void run(final PokedexConfiguration configuration,
                     final Environment environment) {
-        // TODO: implement application
+        environment.jersey().register(new PokemonResource());
     }
 
 }
