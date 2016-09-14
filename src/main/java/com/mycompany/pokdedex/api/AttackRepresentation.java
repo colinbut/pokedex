@@ -7,14 +7,14 @@ package com.mycompany.pokdedex.api;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class PokemonAttack {
+public class AttackRepresentation {
 
     private String name;
     private int power;
     private int accuracy;
-    private PokemonType pokemonType;
+    private TypeRepresentation typeRepresentation;
 
-    public PokemonAttack() {
+    public AttackRepresentation() {
 
     }
 
@@ -49,12 +49,12 @@ public class PokemonAttack {
     }
 
     @JsonProperty
-    public PokemonType getPokemonType() {
-        return pokemonType;
+    public TypeRepresentation getTypeRepresentation() {
+        return typeRepresentation;
     }
 
     @JsonProperty
-    public void setPokemonType(PokemonType pokemonType) {
-        this.pokemonType = pokemonType;
+    public void setTypeRepresentation(TypeRepresentation typeRepresentation) {
+        this.typeRepresentation = typeRepresentation;
     }
 }

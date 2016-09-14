@@ -7,11 +7,11 @@ package com.mycompany.pokdedex.api;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class PokemonType {
+public class TypeRepresentation {
 
     private String typeName;
 
-    public PokemonType() {
+    public TypeRepresentation() {
 
     }
 

@@ -5,7 +5,7 @@
  */
 package com.mycompany.pokdedex.resources;
 
-import com.mycompany.pokdedex.api.PokemonView;
+import com.mycompany.pokdedex.api.PokemonRepresentation;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -17,7 +17,7 @@ import javax.ws.rs.core.MediaType;
 public class PokemonResource {
 
     @GET
-    public PokemonView getPokemon() {
+    public PokemonRepresentation getPokemon() {
         return null;
     }
 
