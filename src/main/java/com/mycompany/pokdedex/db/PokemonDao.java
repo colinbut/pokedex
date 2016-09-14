@@ -6,13 +6,13 @@
 package com.mycompany.pokdedex.db;
 
 import com.mycompany.pokdedex.db.dto.PokemonDto;
-import com.mycompany.pokdedex.db.mapper.PokemonMapper;
+import com.mycompany.pokdedex.db.mapper.JDBIPokemonDtoMapper;
 import org.skife.jdbi.v2.sqlobject.Bind;
 import org.skife.jdbi.v2.sqlobject.SqlQuery;
 import org.skife.jdbi.v2.sqlobject.SqlUpdate;
 import org.skife.jdbi.v2.sqlobject.customizers.Mapper;
 
-//@RegisterMapper(PokemonMapper.class)
+//@RegisterMapper(JDBIPokemonDtoMapper.class)
 public interface PokemonDao {
 
     @Deprecated
@@ -25,7 +25,7 @@ public interface PokemonDao {
 
 
     @SqlQuery("SELECT * FROM POKEMON WHERE ID = :id")
-    @Mapper(PokemonMapper.class)
+    @Mapper(JDBIPokemonDtoMapper.class)
     PokemonDto fetch(@Bind("id") int id);
 
     @SqlUpdate("UPDATE POKEMON SET name = :name, hit_points = :hit_points, combat_power = :combat_power, type_id = :type_id")

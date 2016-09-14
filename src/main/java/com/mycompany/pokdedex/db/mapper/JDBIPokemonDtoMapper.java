@@ -12,7 +12,7 @@ import org.skife.jdbi.v2.tweak.ResultSetMapper;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-public class PokemonMapper implements ResultSetMapper<PokemonDto> {
+public class JDBIPokemonDtoMapper implements ResultSetMapper<PokemonDto> {
 
     @Override
     public PokemonDto map(int i, ResultSet resultSet, StatementContext statementContext) throws SQLException {

@@ -12,7 +12,7 @@ import org.skife.jdbi.v2.tweak.ResultSetMapper;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-public class AttackMapper implements ResultSetMapper<AttackDto> {
+public class JDBIAttackDtoMapper implements ResultSetMapper<AttackDto> {
 
     @Override
     public AttackDto map(int i, ResultSet resultSet, StatementContext statementContext) throws SQLException {

@@ -6,12 +6,12 @@
 package com.mycompany.pokdedex.db;
 
 import com.mycompany.pokdedex.db.dto.AttackDto;
-import com.mycompany.pokdedex.db.mapper.AttackMapper;
+import com.mycompany.pokdedex.db.mapper.JDBIAttackDtoMapper;
 import org.skife.jdbi.v2.sqlobject.Bind;
 import org.skife.jdbi.v2.sqlobject.SqlQuery;
 import org.skife.jdbi.v2.sqlobject.customizers.RegisterMapper;
 
-@RegisterMapper(AttackMapper.class)
+@RegisterMapper(JDBIAttackDtoMapper.class)
 public interface AttackDao {
 
     @SqlQuery("SELECT id, name FROM ATTACK WHERE ID = :id")
