@@ -9,9 +9,18 @@ import java.util.Objects;
 
 public class Attack {
 
+    private String name;
     private int power;
     private int accuracy;
     private Type type;
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
 
     public int getPower() {
         return power;
@@ -46,23 +55,27 @@ public class Attack {
             return false;
         }
         Attack attack = (Attack) o;
-        return power == attack.power
+        return name.equals(attack.name)
+            && power == attack.power
             && accuracy == attack.accuracy
             && type == attack.type;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(power, accuracy, type);
+        return Objects.hash(name, power, accuracy, type);
     }
 
     @Override
     public String toString() {
         final StringBuilder sb = new StringBuilder("Attack{");
-        sb.append("power=").append(power);
+        sb.append("name=").append(name);
+        sb.append(", power=").append(power);
         sb.append(", accuracy=").append(accuracy);
         sb.append(", type=").append(type);
         sb.append('}');
         return sb.toString();
     }
+
+
 }
