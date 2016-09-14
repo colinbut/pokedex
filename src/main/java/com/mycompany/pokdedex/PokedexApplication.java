@@ -1,8 +1,14 @@
 package com.mycompany.pokdedex;
 
+import com.mycompany.pokdedex.core.service.AttackService;
+import com.mycompany.pokdedex.core.service.AttackServiceImpl;
 import com.mycompany.pokdedex.core.service.PokemonService;
 import com.mycompany.pokdedex.core.service.PokemonServiceImpl;
+import com.mycompany.pokdedex.core.service.TypeService;
+import com.mycompany.pokdedex.core.service.TypeServiceImpl;
+import com.mycompany.pokdedex.db.AttackDao;
 import com.mycompany.pokdedex.db.PokemonDao;
+import com.mycompany.pokdedex.db.TypeDao;
 import com.mycompany.pokdedex.resources.PokemonResource;
 import io.dropwizard.Application;
 import io.dropwizard.jdbi.DBIFactory;
@@ -32,10 +38,19 @@ public class PokedexApplication extends Application<PokedexConfiguration> {
 
         final DBIFactory dbiFactory = new DBIFactory();
         final DBI dbi = dbiFactory.build(environment, configuration.getDatasourceFactory(), "mysql");
+
+        // initialise (load) DAOs
         final PokemonDao pokemonDao = dbi.onDemand(PokemonDao.class);
+        final TypeDao typeDao = dbi.onDemand(TypeDao.class);
+        final AttackDao attackDao = dbi.onDemand(AttackDao.class);
 
-        PokemonService pokemonService = new PokemonServiceImpl(pokemonDao);
+        // manual Dependency Injection (for now at least)
+        final TypeService typeService = new TypeServiceImpl(typeDao);
+        final AttackService attackService = new AttackServiceImpl(attackDao);
 
+        PokemonService pokemonService = new PokemonServiceImpl(pokemonDao, attackService, typeService);
+
+        // register!
         environment.jersey().register(new PokemonResource(pokemonService));
 
 
