@@ -15,7 +15,11 @@ CREATE TABLE POKEMON_TYPE (
 CREATE TABLE ATTACK (
     id INT NOT NULL AUTO_INCREMENT,
     name VARCHAR(255),
-    PRIMARY KEY(id)
+    power INT,
+    accuracy INT,
+    type_id INT,
+    PRIMARY KEY(id),
+    FOREIGN KEY (type_id) REFERENCES POKEMON_TYPE(id)
 );
 
 

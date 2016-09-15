@@ -19,6 +19,9 @@ public class JDBIAttackDtoMapper implements ResultSetMapper<AttackDto> {
         AttackDto attackDto = new AttackDto();
         attackDto.setId(resultSet.getInt("id"));
         attackDto.setAttackName(resultSet.getString("name"));
+        attackDto.setPower(resultSet.getInt("power"));
+        attackDto.setAccuracy(resultSet.getInt("accuracy"));
+        attackDto.setType(resultSet.getInt("type_id"));
         return attackDto;
     }
 
