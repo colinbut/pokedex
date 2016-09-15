@@ -21,3 +21,13 @@ note that:
 
 `server` is the command to indicate starting this application as a HTTP Server. (Jetty HTTP Server is started up)
 `src/main/resources/pokedex.yaml` is the application configuration file in yaml (yml) format
+
+
+### Key Technologies
+
+- Dropwizard
+    - Jersey (JAX-RS)
+    - Jackson JSON
+    - Jetty
+    - JDBI
+    - SLF4J/Logback
