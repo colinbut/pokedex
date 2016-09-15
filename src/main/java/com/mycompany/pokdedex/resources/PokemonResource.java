@@ -7,10 +7,12 @@ package com.mycompany.pokdedex.resources;
 
 import com.mycompany.pokdedex.api.PokemonRepresentation;
 import com.mycompany.pokdedex.core.domain.Pokemon;
+import com.mycompany.pokdedex.core.domain.Type;
 import com.mycompany.pokdedex.core.service.PokemonService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.validation.Valid;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -20,6 +22,8 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.UriBuilder;
 
 @Path("/pokemon/{id}")
 @Produces(MediaType.APPLICATION_JSON)
@@ -42,13 +46,20 @@ public class PokemonResource {
     }
 
     @PUT
-    public void addPokemon() {
-        pokemonService.saveNewPokemon(new Pokemon());
+    public void addPokemon(@PathParam("id") int id, @Valid PokemonRepresentation pokemonRepresentation) {
+        Pokemon pokemon = new Pokemon();
+        pokemon.setId(id);
+        pokemon.setName(pokemonRepresentation.getName());
+        pokemon.setHitPoints(pokemonRepresentation.getHitPoints());
+        pokemon.setCombatPower(pokemonRepresentation.getCombatPower());
+        //TODO set attacks
+        pokemon.setType(Type.valueOf(pokemonRepresentation.getType().getTypeName()));
+        pokemonService.saveNewPokemon(pokemon);
     }
 
     @POST
-    public void updatePokemon() {
-        throw new UnsupportedOperationException("Not Yet Implemented!");
+    public Response updatePokemon(@PathParam("id") int id, @Valid PokemonRepresentation pokemonRepresentation) {
+        return Response.created(UriBuilder.fromResource(PokemonResource.class).build(id)).build();
     }
 
     @DELETE

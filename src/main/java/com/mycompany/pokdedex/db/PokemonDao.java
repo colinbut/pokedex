@@ -12,10 +12,8 @@ import org.skife.jdbi.v2.sqlobject.SqlQuery;
 import org.skife.jdbi.v2.sqlobject.SqlUpdate;
 import org.skife.jdbi.v2.sqlobject.customizers.Mapper;
 
-//@RegisterMapper(JDBIPokemonDtoMapper.class)
 public interface PokemonDao {
 
-    @Deprecated
     @SqlUpdate("INSERT INTO POKEMON (name, hit_points, combat_power, type_id) " +
         "VALUES (:name, :hit_points, :combat_power, :type_id)")
     void insert(@Bind("name") String name,

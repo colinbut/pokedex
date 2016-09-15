@@ -8,6 +8,8 @@ package com.mycompany.pokdedex.api;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import java.util.List;
+
 public class PokemonRepresentation {
 
     private int id;
@@ -15,6 +17,7 @@ public class PokemonRepresentation {
     private int hitPoints;
     private int combatPower;
     private TypeRepresentation type;
+    private List<String> attacks;
 
     public PokemonRepresentation() {
 
@@ -70,4 +73,13 @@ public class PokemonRepresentation {
         this.type = type;
     }
 
+    @JsonProperty
+    public List<String> getAttacks() {
+        return attacks;
+    }
+
+    @JsonProperty
+    public void setAttacks(List<String> attacks) {
+        this.attacks = attacks;
+    }
 }
