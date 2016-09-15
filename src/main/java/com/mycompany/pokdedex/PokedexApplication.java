@@ -40,7 +40,7 @@ public class PokedexApplication extends Application<PokedexConfiguration> {
                     final Environment environment) {
 
         final DBIFactory dbiFactory = new DBIFactory();
-        final DBI dbi = dbiFactory.build(environment, configuration.getDatasourceFactory(), "mysql");
+        final DBI dbi = dbiFactory.build(environment, configuration.getDatabase(), "mysql");
 
         // initialise (load) DAOs
         final PokemonDao pokemonDao = dbi.onDemand(PokemonDao.class);

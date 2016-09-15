@@ -14,7 +14,7 @@ public class PokedexConfiguration extends Configuration {
     @JsonProperty
     private DataSourceFactory database = new DataSourceFactory();
 
-    public DataSourceFactory getDatasourceFactory() {
+    public DataSourceFactory getDatabase() {
         return database;
     }
 
