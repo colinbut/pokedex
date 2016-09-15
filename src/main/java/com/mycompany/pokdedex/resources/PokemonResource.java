@@ -6,6 +6,7 @@
 package com.mycompany.pokdedex.resources;
 
 import com.mycompany.pokdedex.api.PokemonRepresentation;
+import com.mycompany.pokdedex.api.TypeRepresentation;
 import com.mycompany.pokdedex.core.domain.Pokemon;
 import com.mycompany.pokdedex.core.domain.Type;
 import com.mycompany.pokdedex.core.service.PokemonService;
@@ -21,6 +22,7 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriBuilder;
@@ -42,7 +44,22 @@ public class PokemonResource {
     @GET
     public PokemonRepresentation getPokemon(@PathParam("id") int id) {
         LOGGER.info("Retrieving pokemon data for pokemon with pokemon id: {}", id);
-        return new PokemonRepresentation();
+        Pokemon pokemon = pokemonService.getPokemon(id);
+        if (pokemon == null) {
+            throw new WebApplicationException(Response.Status.NOT_FOUND);
+        }
+
+        PokemonRepresentation pokemonRepresentation = new PokemonRepresentation();
+        pokemonRepresentation.setId(pokemon.getId());
+        pokemonRepresentation.setName(pokemon.getName());
+        pokemonRepresentation.setHitPoints(pokemon.getHitPoints());
+        pokemonRepresentation.setCombatPower(pokemon.getCombatPower());
+
+        TypeRepresentation typeRepresentation = new TypeRepresentation();
+        typeRepresentation.setTypeName(pokemon.getType().toString());
+        pokemonRepresentation.setType(typeRepresentation);
+
+        return pokemonRepresentation;
     }
 
     @PUT
@@ -59,12 +76,20 @@ public class PokemonResource {
 
     @POST
     public Response updatePokemon(@PathParam("id") int id, @Valid PokemonRepresentation pokemonRepresentation) {
+        Pokemon pokemon = new Pokemon();
+        pokemon.setId(id);
+        pokemon.setName(pokemonRepresentation.getName());
+        pokemon.setHitPoints(pokemonRepresentation.getHitPoints());
+        pokemon.setCombatPower(pokemonRepresentation.getCombatPower());
+        //TODO set attacks
+        pokemon.setType(Type.valueOf(pokemonRepresentation.getType().getTypeName()));
+        pokemonService.updatePokemon(pokemon);
         return Response.created(UriBuilder.fromResource(PokemonResource.class).build(id)).build();
     }
 
     @DELETE
     public void deletePokemon(@PathParam("id") int id) {
-        throw new UnsupportedOperationException("Not Yet Implemented!");
+        pokemonService.deletePokemon(id);
     }
 
 }

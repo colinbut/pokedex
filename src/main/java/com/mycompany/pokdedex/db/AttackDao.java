@@ -23,7 +23,7 @@ public interface AttackDao {
      * @return {@link AttackDto}
      */
     @Deprecated
-    @SqlQuery("SELECT id, name FROM ATTACK WHERE ID = :id")
+    @SqlQuery("SELECT name FROM ATTACK WHERE ID = :id")
     AttackDto fetch(@Bind("id") int id);
 
     @SqlQuery("SELECT * FROM ATTACK")

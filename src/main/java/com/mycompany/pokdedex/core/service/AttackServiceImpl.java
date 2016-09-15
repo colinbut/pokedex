@@ -8,12 +8,16 @@ package com.mycompany.pokdedex.core.service;
 import com.mycompany.pokdedex.core.domain.Attack;
 import com.mycompany.pokdedex.db.AttackDao;
 import com.mycompany.pokdedex.db.dto.AttackDto;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public class AttackServiceImpl implements AttackService {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(AttackServiceImpl.class);
 
     private final AttackDao attackDao;
 
