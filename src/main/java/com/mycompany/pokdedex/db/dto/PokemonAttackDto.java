@@ -5,6 +5,8 @@
  */
 package com.mycompany.pokdedex.db.dto;
 
+import java.util.Objects;
+
 public class PokemonAttackDto {
 
     private int pokemonId;
@@ -25,4 +27,32 @@ public class PokemonAttackDto {
     public void setAttackId(int attackId) {
         this.attackId = attackId;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        PokemonAttackDto that = (PokemonAttackDto) o;
+        return pokemonId == that.pokemonId &&
+            attackId == that.attackId;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(pokemonId, attackId);
+    }
+
+    @Override
+    public String toString() {
+        final StringBuilder sb = new StringBuilder("PokemonAttackDto{");
+        sb.append("pokemonId=").append(pokemonId);
+        sb.append(", attackId=").append(attackId);
+        sb.append('}');
+        return sb.toString();
+    }
+
 }
