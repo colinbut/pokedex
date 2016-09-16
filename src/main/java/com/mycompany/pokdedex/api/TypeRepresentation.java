@@ -7,6 +7,8 @@ package com.mycompany.pokdedex.api;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import java.util.Objects;
+
 public class TypeRepresentation {
 
     private String typeName;
@@ -23,6 +25,31 @@ public class TypeRepresentation {
     @JsonProperty
     public void setTypeName(String typeName) {
         this.typeName = typeName;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        TypeRepresentation that = (TypeRepresentation) o;
+        return Objects.equals(typeName, that.typeName);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(typeName);
+    }
+
+    @Override
+    public String toString() {
+        final StringBuilder sb = new StringBuilder("TypeRepresentation{");
+        sb.append("typeName='").append(typeName).append('\'');
+        sb.append('}');
+        return sb.toString();
     }
 
 }

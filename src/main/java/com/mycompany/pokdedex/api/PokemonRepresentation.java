@@ -9,6 +9,7 @@ package com.mycompany.pokdedex.api;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.List;
+import java.util.Objects;
 
 public class PokemonRepresentation {
 
@@ -82,4 +83,40 @@ public class PokemonRepresentation {
     public void setAttacks(List<String> attacks) {
         this.attacks = attacks;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        PokemonRepresentation that = (PokemonRepresentation) o;
+        return id == that.id &&
+            hitPoints == that.hitPoints &&
+            combatPower == that.combatPower &&
+            Objects.equals(name, that.name) &&
+            Objects.equals(type, that.type) &&
+            Objects.equals(attacks, that.attacks);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name, hitPoints, combatPower, type, attacks);
+    }
+
+    @Override
+    public String toString() {
+        final StringBuilder sb = new StringBuilder("PokemonRepresentation{");
+        sb.append("id=").append(id);
+        sb.append(", name='").append(name).append('\'');
+        sb.append(", hitPoints=").append(hitPoints);
+        sb.append(", combatPower=").append(combatPower);
+        sb.append(", type=").append(type);
+        sb.append(", attacks=").append(attacks);
+        sb.append('}');
+        return sb.toString();
+    }
+
 }
