@@ -21,21 +21,29 @@ public class AttackServiceImpl implements AttackService {
 
     private final AttackDao attackDao;
 
-    private Map<Integer, String> attackMap = new HashMap<>();
+    private Map<Integer, AttackDto> attackMap = new HashMap<>();
 
     public AttackServiceImpl(AttackDao attackDao) {
         this.attackDao = attackDao;
 
+        LOGGER.debug("Loading data from the database into memory");
+
         List<AttackDto> attackDtoList = attackDao.fetchList();
         for (AttackDto attackDto : attackDtoList) {
-            attackMap.put(attackDto.getId(), attackDto.getAttackName());
+            LOGGER.trace("Inserted {} into memory map", attackDto);
+            attackMap.put(attackDto.getId(), attackDto);
         }
-
+        LOGGER.debug("Finished loading data from the database into memory");
     }
 
 
     @Override
     public Attack getAttackById(int id) {
-        return null;
+        AttackDto attackDto = attackMap.get(id);
+        Attack attack = new Attack();
+        attack.setName(attackDto.getAttackName());
+        attack.setPower(attackDto.getPower());
+        attack.setAccuracy(attackDto.getAccuracy());
+        return attack;
     }
 }

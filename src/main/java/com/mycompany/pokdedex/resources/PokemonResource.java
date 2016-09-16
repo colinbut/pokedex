@@ -48,6 +48,7 @@ public class PokemonResource {
         if (pokemon == null) {
             throw new WebApplicationException(Response.Status.NOT_FOUND);
         }
+        LOGGER.debug("Got pokemon {} from the PokemonService", pokemon);
 
         PokemonRepresentation pokemonRepresentation = new PokemonRepresentation();
         pokemonRepresentation.setId(pokemon.getId());
@@ -59,11 +60,14 @@ public class PokemonResource {
         typeRepresentation.setTypeName(pokemon.getType().toString());
         pokemonRepresentation.setType(typeRepresentation);
 
+        LOGGER.info("Retrieved pokemon data {} for pokemon with id: {}", pokemonRepresentation, id);
+
         return pokemonRepresentation;
     }
 
     @PUT
-    public void addPokemon(@PathParam("id") int id, @Valid PokemonRepresentation pokemonRepresentation) {
+    public Response addPokemon(@PathParam("id") int id, @Valid PokemonRepresentation pokemonRepresentation) {
+        LOGGER.info("Adding pokemon {}", pokemonRepresentation);
         Pokemon pokemon = new Pokemon();
         pokemon.setId(id);
         pokemon.setName(pokemonRepresentation.getName());
@@ -72,6 +76,8 @@ public class PokemonResource {
         //TODO set attacks
         pokemon.setType(Type.valueOf(pokemonRepresentation.getType().getTypeName()));
         pokemonService.saveNewPokemon(pokemon);
+        LOGGER.info("Successfully added new pokemon: {}", id);
+        return Response.created(UriBuilder.fromResource(PokemonResource.class).build(id)).build();
     }
 
     @POST
@@ -88,8 +94,11 @@ public class PokemonResource {
     }
 
     @DELETE
-    public void deletePokemon(@PathParam("id") int id) {
+    public Response deletePokemon(@PathParam("id") int id) {
+        LOGGER.info("Deleting pokemon: {}", id);
         pokemonService.deletePokemon(id);
+        LOGGER.info("Successfully deleted pokemon: {}", id);
+        return Response.created(UriBuilder.fromResource(PokemonResource.class).build(id)).build();
     }
 
 }
