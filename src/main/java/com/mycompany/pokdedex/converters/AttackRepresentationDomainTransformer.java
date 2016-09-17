@@ -3,7 +3,7 @@
  * | Copyright © 2016 Colin But. All rights reserved.
  * |-------------------------------------------------
  */
-package com.mycompany.pokdedex.common;
+package com.mycompany.pokdedex.converters;
 
 import com.mycompany.pokdedex.api.AttackRepresentation;
 import com.mycompany.pokdedex.api.TypeRepresentation;

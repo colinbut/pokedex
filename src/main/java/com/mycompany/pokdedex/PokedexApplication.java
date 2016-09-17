@@ -1,6 +1,5 @@
 package com.mycompany.pokdedex;
 
-import com.mycompany.pokdedex.common.PokemonRepresentationDomainTransformer;
 import com.mycompany.pokdedex.core.service.AttackService;
 import com.mycompany.pokdedex.core.service.AttackServiceImpl;
 import com.mycompany.pokdedex.core.service.PokemonAttackService;

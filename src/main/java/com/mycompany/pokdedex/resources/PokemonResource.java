@@ -6,7 +6,7 @@
 package com.mycompany.pokdedex.resources;
 
 import com.mycompany.pokdedex.api.PokemonRepresentation;
-import com.mycompany.pokdedex.common.PokemonRepresentationDomainTransformer;
+import com.mycompany.pokdedex.converters.PokemonRepresentationDomainTransformer;
 import com.mycompany.pokdedex.core.domain.Pokemon;
 import com.mycompany.pokdedex.core.service.PokemonService;
 import org.slf4j.Logger;
