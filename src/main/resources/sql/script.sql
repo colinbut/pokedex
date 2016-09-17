@@ -61,7 +61,7 @@ INSERT INTO POKEMON_TYPE (name) VALUES
 ('DRAGON'),
 ('FAIRY');
 
-INSERT INTO ATTACK (name) VALUES ('Thunderbolt');
+INSERT INTO ATTACK (name, power, accuracy, type_id) VALUES ('Thunderbolt', 35, 75, (SELECT ID FROM POKEMON_TYPE WHERE NAME = 'ELECTRIC'));
 
 INSERT INTO POKEMON (name, hit_points, combat_power, type_id) VALUES ('Pikachu', 55, 45, 7);
 
