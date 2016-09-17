@@ -14,9 +14,9 @@ import com.mycompany.pokdedex.core.domain.Type;
 
 import java.util.List;
 
-public final class PokemonRepresentationDomainTransformer {
+public final class PokemonRepresentationDomainConverter {
 
-    private PokemonRepresentationDomainTransformer() {}
+    private PokemonRepresentationDomainConverter() {}
 
     public static Pokemon asDomain(PokemonRepresentation pokemonRepresentation) {
         Pokemon pokemon = new Pokemon();
@@ -25,7 +25,7 @@ public final class PokemonRepresentationDomainTransformer {
         pokemon.setHitPoints(pokemonRepresentation.getHitPoints());
         pokemon.setCombatPower(pokemonRepresentation.getCombatPower());
 
-        List<Attack> attacks = AttackRepresentationDomainTransformer.asDomainList(pokemonRepresentation.getAttacks());
+        List<Attack> attacks = AttackRepresentationDomainConverter.asDomainList(pokemonRepresentation.getAttacks());
         pokemon.setAttacks(attacks);
 
         pokemon.setType(Type.valueOf(pokemonRepresentation.getType().getTypeName()));
@@ -39,7 +39,7 @@ public final class PokemonRepresentationDomainTransformer {
         pokemonRepresentation.setHitPoints(pokemon.getHitPoints());
         pokemonRepresentation.setCombatPower(pokemon.getCombatPower());
 
-        List<AttackRepresentation> attackRepresentationList = AttackRepresentationDomainTransformer.asRepresentationList(pokemon.getAttacks());
+        List<AttackRepresentation> attackRepresentationList = AttackRepresentationDomainConverter.asRepresentationList(pokemon.getAttacks());
         pokemonRepresentation.setAttacks(attackRepresentationList);
 
         TypeRepresentation typeRepresentation = new TypeRepresentation();

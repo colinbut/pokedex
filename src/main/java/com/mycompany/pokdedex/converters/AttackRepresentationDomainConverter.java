@@ -13,9 +13,9 @@ import com.mycompany.pokdedex.core.domain.Type;
 import java.util.ArrayList;
 import java.util.List;
 
-public final class AttackRepresentationDomainTransformer {
+public final class AttackRepresentationDomainConverter {
 
-    private AttackRepresentationDomainTransformer() {}
+    private AttackRepresentationDomainConverter() {}
 
     public static Attack asDomain(AttackRepresentation attackRepresentation) {
         Attack attack = new Attack();

@@ -6,7 +6,7 @@
 package com.mycompany.pokdedex.resources;
 
 import com.mycompany.pokdedex.api.PokemonRepresentation;
-import com.mycompany.pokdedex.converters.PokemonRepresentationDomainTransformer;
+import com.mycompany.pokdedex.converters.PokemonRepresentationDomainConverter;
 import com.mycompany.pokdedex.core.domain.Pokemon;
 import com.mycompany.pokdedex.core.service.PokemonService;
 import org.slf4j.Logger;
@@ -49,7 +49,7 @@ public class PokemonResource {
             throw new WebApplicationException(Response.Status.NOT_FOUND);
         }
         LOGGER.debug("Got pokemon {} from the PokemonService", pokemon);
-        PokemonRepresentation pokemonRepresentation = PokemonRepresentationDomainTransformer.asRepresentation(pokemon);
+        PokemonRepresentation pokemonRepresentation = PokemonRepresentationDomainConverter.asRepresentation(pokemon);
         LOGGER.info("Retrieved pokemon data {} for pokemon with id: {}", pokemonRepresentation, id);
         return pokemonRepresentation;
     }
@@ -57,7 +57,7 @@ public class PokemonResource {
     @PUT
     public Response addPokemon(@PathParam("id") int id, @Valid PokemonRepresentation pokemonRepresentation) {
         LOGGER.info("Adding pokemon {}", pokemonRepresentation);
-        Pokemon pokemon = PokemonRepresentationDomainTransformer.asDomain(pokemonRepresentation);
+        Pokemon pokemon = PokemonRepresentationDomainConverter.asDomain(pokemonRepresentation);
         pokemonService.saveNewPokemon(pokemon);
         LOGGER.info("Successfully added new pokemon: {}", id);
         return Response.created(UriBuilder.fromResource(PokemonResource.class).build(id)).build();
@@ -65,7 +65,7 @@ public class PokemonResource {
 
     @POST
     public Response updatePokemon(@PathParam("id") int id, @Valid PokemonRepresentation pokemonRepresentation) {
-        Pokemon pokemon = PokemonRepresentationDomainTransformer.asDomain(pokemonRepresentation);
+        Pokemon pokemon = PokemonRepresentationDomainConverter.asDomain(pokemonRepresentation);
         pokemonService.updatePokemon(pokemon);
         return Response.created(UriBuilder.fromResource(PokemonResource.class).build(id)).build();
     }
