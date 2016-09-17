@@ -1,5 +1,6 @@
 package com.mycompany.pokdedex;
 
+import com.mycompany.pokdedex.common.PokemonRepresentationDomainTransformer;
 import com.mycompany.pokdedex.core.service.AttackService;
 import com.mycompany.pokdedex.core.service.AttackServiceImpl;
 import com.mycompany.pokdedex.core.service.PokemonAttackService;
@@ -50,10 +51,9 @@ public class PokedexApplication extends Application<PokedexConfiguration> {
 
         // manual Dependency Injection (for now at least)
         final TypeService typeService = new TypeServiceImpl(typeDao);
-        final AttackService attackService = new AttackServiceImpl(attackDao);
+        final AttackService attackService = new AttackServiceImpl(attackDao, typeService);
         final PokemonAttackService pokemonAttackService = new PokemonAttackServiceImpl(pokemonAttackDao);
-
-        PokemonService pokemonService = new PokemonServiceImpl(pokemonDao, attackService, typeService, pokemonAttackService);
+        final PokemonService pokemonService = new PokemonServiceImpl(pokemonDao, attackService, typeService, pokemonAttackService);
 
         // register!
         environment.jersey().register(new PokemonResource(pokemonService));

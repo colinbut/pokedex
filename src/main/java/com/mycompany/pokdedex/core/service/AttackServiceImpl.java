@@ -20,12 +20,18 @@ public class AttackServiceImpl implements AttackService {
     private static final Logger LOGGER = LoggerFactory.getLogger(AttackServiceImpl.class);
 
     private final AttackDao attackDao;
+    private final TypeService typeService;
 
     private Map<Integer, AttackDto> attackMap = new HashMap<>();
 
-    public AttackServiceImpl(AttackDao attackDao) {
-        this.attackDao = attackDao;
 
+    public AttackServiceImpl(AttackDao attackDao, TypeService typeService) {
+        this.attackDao = attackDao;
+        this.typeService = typeService;
+        initialize();
+    }
+
+    private void initialize() {
         LOGGER.debug("Loading data from the database into memory");
 
         List<AttackDto> attackDtoList = attackDao.fetchList();
@@ -40,10 +46,25 @@ public class AttackServiceImpl implements AttackService {
     @Override
     public Attack getAttackById(int id) {
         AttackDto attackDto = attackMap.get(id);
-        Attack attack = new Attack();
-        attack.setName(attackDto.getAttackName());
-        attack.setPower(attackDto.getPower());
-        attack.setAccuracy(attackDto.getAccuracy());
-        return attack;
+        return new AttackDtoTransformer().transformDtoToDomain(attackDto);
     }
+
+
+    /**
+     * Making this an inner class right now because this is the only usage
+     * place at the moment
+     */
+    private class AttackDtoTransformer {
+
+        public Attack transformDtoToDomain(AttackDto attackDto) {
+            Attack attack = new Attack();
+            attack.setName(attackDto.getAttackName());
+            attack.setPower(attackDto.getPower());
+            attack.setAccuracy(attackDto.getAccuracy());
+            attack.setType(typeService.getTypeById(attackDto.getType()));
+            return attack;
+        }
+
+    }
+
 }

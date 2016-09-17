@@ -6,9 +6,8 @@
 package com.mycompany.pokdedex.resources;
 
 import com.mycompany.pokdedex.api.PokemonRepresentation;
-import com.mycompany.pokdedex.api.TypeRepresentation;
+import com.mycompany.pokdedex.common.PokemonRepresentationDomainTransformer;
 import com.mycompany.pokdedex.core.domain.Pokemon;
-import com.mycompany.pokdedex.core.domain.Type;
 import com.mycompany.pokdedex.core.service.PokemonService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,6 +35,7 @@ public class PokemonResource {
 
     private final PokemonService pokemonService;
 
+
     public PokemonResource(PokemonService pokemonService) {
         this.pokemonService = pokemonService;
     }
@@ -49,32 +49,15 @@ public class PokemonResource {
             throw new WebApplicationException(Response.Status.NOT_FOUND);
         }
         LOGGER.debug("Got pokemon {} from the PokemonService", pokemon);
-
-        PokemonRepresentation pokemonRepresentation = new PokemonRepresentation();
-        pokemonRepresentation.setId(pokemon.getId());
-        pokemonRepresentation.setName(pokemon.getName());
-        pokemonRepresentation.setHitPoints(pokemon.getHitPoints());
-        pokemonRepresentation.setCombatPower(pokemon.getCombatPower());
-
-        TypeRepresentation typeRepresentation = new TypeRepresentation();
-        typeRepresentation.setTypeName(pokemon.getType().toString());
-        pokemonRepresentation.setType(typeRepresentation);
-
+        PokemonRepresentation pokemonRepresentation = PokemonRepresentationDomainTransformer.asRepresentation(pokemon);
         LOGGER.info("Retrieved pokemon data {} for pokemon with id: {}", pokemonRepresentation, id);
-
         return pokemonRepresentation;
     }
 
     @PUT
     public Response addPokemon(@PathParam("id") int id, @Valid PokemonRepresentation pokemonRepresentation) {
         LOGGER.info("Adding pokemon {}", pokemonRepresentation);
-        Pokemon pokemon = new Pokemon();
-        pokemon.setId(id);
-        pokemon.setName(pokemonRepresentation.getName());
-        pokemon.setHitPoints(pokemonRepresentation.getHitPoints());
-        pokemon.setCombatPower(pokemonRepresentation.getCombatPower());
-        //TODO set attacks
-        pokemon.setType(Type.valueOf(pokemonRepresentation.getType().getTypeName()));
+        Pokemon pokemon = PokemonRepresentationDomainTransformer.asDomain(pokemonRepresentation);
         pokemonService.saveNewPokemon(pokemon);
         LOGGER.info("Successfully added new pokemon: {}", id);
         return Response.created(UriBuilder.fromResource(PokemonResource.class).build(id)).build();
@@ -82,13 +65,7 @@ public class PokemonResource {
 
     @POST
     public Response updatePokemon(@PathParam("id") int id, @Valid PokemonRepresentation pokemonRepresentation) {
-        Pokemon pokemon = new Pokemon();
-        pokemon.setId(id);
-        pokemon.setName(pokemonRepresentation.getName());
-        pokemon.setHitPoints(pokemonRepresentation.getHitPoints());
-        pokemon.setCombatPower(pokemonRepresentation.getCombatPower());
-        //TODO set attacks
-        pokemon.setType(Type.valueOf(pokemonRepresentation.getType().getTypeName()));
+        Pokemon pokemon = PokemonRepresentationDomainTransformer.asDomain(pokemonRepresentation);
         pokemonService.updatePokemon(pokemon);
         return Response.created(UriBuilder.fromResource(PokemonResource.class).build(id)).build();
     }

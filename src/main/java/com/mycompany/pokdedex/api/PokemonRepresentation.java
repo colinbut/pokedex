@@ -18,7 +18,7 @@ public class PokemonRepresentation {
     private int hitPoints;
     private int combatPower;
     private TypeRepresentation type;
-    private List<String> attacks;
+    private List<AttackRepresentation> attacks;
 
     public PokemonRepresentation() {
 
@@ -75,12 +75,12 @@ public class PokemonRepresentation {
     }
 
     @JsonProperty
-    public List<String> getAttacks() {
+    public List<AttackRepresentation> getAttacks() {
         return attacks;
     }
 
     @JsonProperty
-    public void setAttacks(List<String> attacks) {
+    public void setAttacks(List<AttackRepresentation> attacks) {
         this.attacks = attacks;
     }
 
