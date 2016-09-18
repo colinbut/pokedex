@@ -14,7 +14,9 @@ import com.mycompany.pokdedex.db.PokemonDao;
 import com.mycompany.pokdedex.db.TypeDao;
 import com.mycompany.pokdedex.resources.PokemonResource;
 import io.dropwizard.Application;
+import io.dropwizard.db.PooledDataSourceFactory;
 import io.dropwizard.jdbi.DBIFactory;
+import io.dropwizard.migrations.MigrationsBundle;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
 import org.skife.jdbi.v2.DBI;
@@ -32,7 +34,12 @@ public class PokedexApplication extends Application<PokedexConfiguration> {
 
     @Override
     public void initialize(final Bootstrap<PokedexConfiguration> bootstrap) {
-        // TODO: application initialization
+        bootstrap.addBundle(new MigrationsBundle<PokedexConfiguration>() {
+            @Override
+            public PooledDataSourceFactory getDataSourceFactory(PokedexConfiguration pokedexConfiguration) {
+                return pokedexConfiguration.getDatabase();
+            }
+        });
     }
 
     @Override
