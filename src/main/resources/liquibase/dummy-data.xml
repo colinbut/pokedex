@@ -25,6 +25,9 @@
             ('DRAGON'),
             ('FAIRY');
         </sql>
+        <rollback>
+            <sql>TRUNCATE TABLE POKEMON_TYPE</sql>
+        </rollback>
     </changeSet>
 
     <changeSet id="2" author="Colin">
@@ -196,6 +199,9 @@
             INSERT INTO ATTACK (name, power, accuracy, type_id) VALUES ('Substitute',0,0,(SELECT ID FROM POKEMON_TYPE WHERE NAME = 'NORMAL'));
             INSERT INTO ATTACK (name, power, accuracy, type_id) VALUES ('Struggle',50,0,(SELECT ID FROM POKEMON_TYPE WHERE NAME = 'NORMAL'));
         </sql>
+        <rollback>
+            <sql>TRUNCATE TABLE ATTACK</sql>
+        </rollback>
     </changeSet>
 
     <changeSet id="3" author="Colin">
@@ -352,6 +358,9 @@
             INSERT INTO POKEMON (name, hit_points, combat_power, type_id) VALUES ('Dragonite',149,3280,(SELECT ID FROM POKEMON_TYPE WHERE NAME = 'DRAGON'));
             INSERT INTO POKEMON (name, hit_points, combat_power, type_id) VALUES ('Mewtwo',173,3904,(SELECT ID FROM POKEMON_TYPE WHERE NAME = 'PSYCHIC'));
         </sql>
+        <rollback>
+            <sql>TRUNCATE TABLE POKEMON</sql>
+        </rollback>
     </changeSet>
 
     <changeSet id="4" author="Colin">
