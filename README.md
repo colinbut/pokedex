@@ -32,3 +32,9 @@ note that:
     - JDBI
     - SLF4J/Logback
     - Liquibase
+
+### Dropwizard Modules
+
+- dropwizard-core
+- dropwizard-jdbi
+- dropwizard-migrations
