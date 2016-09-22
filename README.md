@@ -31,3 +31,4 @@ note that:
     - Jetty
     - JDBI
     - SLF4J/Logback
+    - Liquibase
