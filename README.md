@@ -5,6 +5,9 @@
 This is an application developed using Dropwizard. It represents the famous 'Pokedex' which is an index of Pokemons (Pocket Monsters). 
 This pokedex is the original pokedex consisting of 150 pokemon. Mew the 151st is therefore not included.
 
+![Image of Pokemon]
+(etc/pokemon.jpg)
+
 ### Build 
 
 ```
