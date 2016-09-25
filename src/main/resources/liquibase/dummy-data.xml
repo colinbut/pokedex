@@ -26,7 +26,7 @@
             ('FAIRY');
         </sql>
         <rollback>
-            <sql>TRUNCATE TABLE POKEMON_TYPE</sql>
+            <sql>DELETE FROM POKEMON_TYPE</sql>
         </rollback>
     </changeSet>
 
@@ -200,7 +200,7 @@
             INSERT INTO ATTACK (name, power, accuracy, type_id) VALUES ('Struggle',50,0,(SELECT ID FROM POKEMON_TYPE WHERE NAME = 'NORMAL'));
         </sql>
         <rollback>
-            <sql>TRUNCATE TABLE ATTACK</sql>
+            <sql>DELETE FROM ATTACK</sql>
         </rollback>
     </changeSet>
 
@@ -359,7 +359,7 @@
             INSERT INTO POKEMON (name, hit_points, combat_power, type_id) VALUES ('Mewtwo',173,3904,(SELECT ID FROM POKEMON_TYPE WHERE NAME = 'PSYCHIC'));
         </sql>
         <rollback>
-            <sql>TRUNCATE TABLE POKEMON</sql>
+            <sql>DELETE FROM POKEMON</sql>
         </rollback>
     </changeSet>
 
@@ -668,7 +668,7 @@
         </sql>
         <rollback>
             <sql>
-                TRUNCATE TABLE POKEMON_ATTACK
+                DELETE FROM POKEMON_ATTACK
             </sql>
         </rollback>
     </changeSet>
