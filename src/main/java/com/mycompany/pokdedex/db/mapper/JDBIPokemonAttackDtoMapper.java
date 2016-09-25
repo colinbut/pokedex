@@ -17,8 +17,8 @@ public class JDBIPokemonAttackDtoMapper implements ResultSetMapper<PokemonAttack
     @Override
     public PokemonAttackDto map(int i, ResultSet resultSet, StatementContext statementContext) throws SQLException {
         PokemonAttackDto pokemonAttackDto = new PokemonAttackDto();
-        pokemonAttackDto.setAttackId(resultSet.getInt("pokemon_id"));
-        pokemonAttackDto.setPokemonId(resultSet.getInt("attack_id"));
+        pokemonAttackDto.setPokemonId(resultSet.getInt("pokemon_id"));
+        pokemonAttackDto.setAttackId(resultSet.getInt("attack_id"));
         return pokemonAttackDto;
     }
 
