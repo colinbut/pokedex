@@ -25,6 +25,42 @@ note that:
 `server` is the command to indicate starting this application as a HTTP Server. (Jetty HTTP Server is started up)
 `src/main/resources/pokedex.yaml` is the application configuration file in yaml (yml) format
 
+### Hitting the endpoint
+
+http://localhost:8080/pokemon/25
+
+Note that 25 is the pokemon index of Pikachu 
+
+```JSON
+{  
+   "id":25,
+   "name":"Pikachu",
+   "hitPoints":61,
+   "combatPower":777,
+   "type":{  
+      "typeName":"ELECTRIC"
+   },
+   "attacks":[  
+      {  
+         "name":"Thunder Shock",
+         "power":40,
+         "accuracy":100,
+         "typeRepresentation":{  
+            "typeName":"ELECTRIC"
+         }
+      },
+      {  
+         "name":"Thunderbolt",
+         "power":90,
+         "accuracy":100,
+         "typeRepresentation":{  
+            "typeName":"ELECTRIC"
+         }
+      }
+   ]
+}
+```
+
 
 ### Key Technologies
 
