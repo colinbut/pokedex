@@ -41,3 +41,30 @@ note that:
 - dropwizard-core
 - dropwizard-jdbi
 - dropwizard-migrations
+
+### Database
+
+Uses MySQL database. You will need to have MySQL in your local. Download it from the MySQL website and follow its installation instructions to install it. 
+
+### Liquibase
+
+Database management is done using Liquibase patches. The patches live under the following directory location:
+`src/main/resources/liquibase/`
+
+where migrations.xml contains list of individual patches to run.
+
+Run the following command to update the database:
+
+```
+java -jar target/pokedex-1.0-SNAPSHOT.jar db migrate src/main/resources/pokedex.yaml
+```
+
+and to rollback:
+```
+java -jar target/pokedex-1.0-SNAPSHOT.jar db rollback src/main/resources/pokedex.yaml --count=4
+```
+
+where `--count` tag indicates number of patches to rollback
+
+
+
