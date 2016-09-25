@@ -68,3 +68,8 @@ where `--count` tag indicates number of patches to rollback
 
 
 
+
+
+**DISCLAIMER: All data in this project are fictional**
+
+
