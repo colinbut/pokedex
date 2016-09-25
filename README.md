@@ -31,7 +31,7 @@ note that:
 
 http://localhost:8080/pokemon/25
 
-Note that 25 is the pokemon index of Pikachu 
+Note that 25 is the pokemon index of Pikachu :heart_eyes:
 
 ```JSON
 {  
