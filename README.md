@@ -1,5 +1,7 @@
 # Pokedex
 
+**DISCLAIMER: All data in this project are fictional**
+
 ## Pokemon Index
 
 This is an application developed using Dropwizard. It represents the famous 'Pokedex' which is an index of Pokemons (Pocket Monsters). 
@@ -106,6 +108,6 @@ where `--count` tag indicates number of patches to rollback
 
 
 
-**DISCLAIMER: All data in this project are fictional**
+
 
 
