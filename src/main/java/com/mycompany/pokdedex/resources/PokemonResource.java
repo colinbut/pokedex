@@ -16,6 +16,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -64,7 +65,7 @@ public class PokemonResource {
     @Timed
     @Metered
     @ExceptionMetered
-    public Response addPokemon(@PathParam("id") int id, @Valid PokemonRepresentation pokemonRepresentation) {
+    public Response addPokemon(@PathParam("id") int id, @NotNull @Valid PokemonRepresentation pokemonRepresentation) {
         LOGGER.info("Adding pokemon {}", pokemonRepresentation);
         Pokemon pokemon = PokemonRepresentationDomainConverter.asDomain(pokemonRepresentation);
         pokemonService.saveNewPokemon(pokemon);
@@ -76,7 +77,7 @@ public class PokemonResource {
     @Timed
     @Metered
     @ExceptionMetered
-    public Response updatePokemon(@PathParam("id") int id, @Valid PokemonRepresentation pokemonRepresentation) {
+    public Response updatePokemon(@PathParam("id") int id, @NotNull @Valid PokemonRepresentation pokemonRepresentation) {
         Pokemon pokemon = PokemonRepresentationDomainConverter.asDomain(pokemonRepresentation);
         pokemonService.updatePokemon(pokemon);
         return Response.created(UriBuilder.fromResource(PokemonResource.class).build(id)).build();
