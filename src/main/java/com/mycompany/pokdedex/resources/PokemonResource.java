@@ -5,6 +5,9 @@
  */
 package com.mycompany.pokdedex.resources;
 
+import com.codahale.metrics.annotation.ExceptionMetered;
+import com.codahale.metrics.annotation.Metered;
+import com.codahale.metrics.annotation.Timed;
 import com.mycompany.pokdedex.api.PokemonRepresentation;
 import com.mycompany.pokdedex.converters.PokemonRepresentationDomainConverter;
 import com.mycompany.pokdedex.core.domain.Pokemon;
@@ -42,6 +45,9 @@ public class PokemonResource {
 
 
     @GET
+    @Timed
+    @Metered
+    @ExceptionMetered
     public PokemonRepresentation getPokemon(@PathParam("id") int id) {
         LOGGER.info("Retrieving pokemon data for pokemon with pokemon id: {}", id);
         Pokemon pokemon = pokemonService.getPokemon(id);
@@ -55,6 +61,9 @@ public class PokemonResource {
     }
 
     @PUT
+    @Timed
+    @Metered
+    @ExceptionMetered
     public Response addPokemon(@PathParam("id") int id, @Valid PokemonRepresentation pokemonRepresentation) {
         LOGGER.info("Adding pokemon {}", pokemonRepresentation);
         Pokemon pokemon = PokemonRepresentationDomainConverter.asDomain(pokemonRepresentation);
@@ -64,6 +73,9 @@ public class PokemonResource {
     }
 
     @POST
+    @Timed
+    @Metered
+    @ExceptionMetered
     public Response updatePokemon(@PathParam("id") int id, @Valid PokemonRepresentation pokemonRepresentation) {
         Pokemon pokemon = PokemonRepresentationDomainConverter.asDomain(pokemonRepresentation);
         pokemonService.updatePokemon(pokemon);
@@ -71,6 +83,9 @@ public class PokemonResource {
     }
 
     @DELETE
+    @Timed
+    @Metered
+    @ExceptionMetered
     public Response deletePokemon(@PathParam("id") int id) {
         LOGGER.info("Deleting pokemon: {}", id);
         pokemonService.deletePokemon(id);
