@@ -12,6 +12,7 @@ import com.mycompany.pokdedex.api.PokemonRepresentation;
 import com.mycompany.pokdedex.converters.PokemonRepresentationDomainConverter;
 import com.mycompany.pokdedex.core.domain.Pokemon;
 import com.mycompany.pokdedex.core.service.PokemonService;
+import io.dropwizard.jersey.caching.CacheControl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -29,6 +30,7 @@ import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriBuilder;
+import java.util.concurrent.TimeUnit;
 
 @Path("/pokemon/{id}")
 @Produces(MediaType.APPLICATION_JSON)
@@ -49,6 +51,7 @@ public class PokemonResource {
     @Timed
     @Metered
     @ExceptionMetered
+    @CacheControl(maxAge = 12, maxAgeUnit = TimeUnit.HOURS)
     public PokemonRepresentation getPokemon(@PathParam("id") int id) {
         LOGGER.info("Retrieving pokemon data for pokemon with pokemon id: {}", id);
         Pokemon pokemon = pokemonService.getPokemon(id);
