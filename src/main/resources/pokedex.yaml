@@ -47,3 +47,7 @@ logging:
 
     # Overrides the level of com.example.dw.Thing and sets it to DEBUG.
     "org.skife.jdbi.v2": TRACE
+
+views:
+  .ftl:
+    strict_syntax: yes

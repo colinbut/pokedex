@@ -13,13 +13,17 @@ import com.mycompany.pokdedex.db.PokemonAttackDao;
 import com.mycompany.pokdedex.db.PokemonDao;
 import com.mycompany.pokdedex.db.TypeDao;
 import com.mycompany.pokdedex.resources.PokemonApiResource;
+import com.sun.javafx.collections.MappingChange;
 import io.dropwizard.Application;
 import io.dropwizard.db.PooledDataSourceFactory;
 import io.dropwizard.jdbi.DBIFactory;
 import io.dropwizard.migrations.MigrationsBundle;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
+import io.dropwizard.views.ViewBundle;
 import org.skife.jdbi.v2.DBI;
+
+import java.util.Map;
 
 public class PokedexApplication extends Application<PokedexConfiguration> {
 
@@ -40,6 +44,8 @@ public class PokedexApplication extends Application<PokedexConfiguration> {
                 return pokedexConfiguration.getDatabase();
             }
         });
+
+        bootstrap.addBundle(new ViewBundle<PokedexConfiguration>());
     }
 
     @Override
@@ -63,7 +69,6 @@ public class PokedexApplication extends Application<PokedexConfiguration> {
 
         // register!
         environment.jersey().register(new PokemonApiResource(pokemonService));
-
 
     }
 
