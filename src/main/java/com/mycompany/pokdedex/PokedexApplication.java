@@ -12,7 +12,7 @@ import com.mycompany.pokdedex.db.AttackDao;
 import com.mycompany.pokdedex.db.PokemonAttackDao;
 import com.mycompany.pokdedex.db.PokemonDao;
 import com.mycompany.pokdedex.db.TypeDao;
-import com.mycompany.pokdedex.resources.PokemonResource;
+import com.mycompany.pokdedex.resources.PokemonApiResource;
 import io.dropwizard.Application;
 import io.dropwizard.db.PooledDataSourceFactory;
 import io.dropwizard.jdbi.DBIFactory;
@@ -62,7 +62,7 @@ public class PokedexApplication extends Application<PokedexConfiguration> {
         final PokemonService pokemonService = new PokemonServiceImpl(pokemonDao, attackService, typeService, pokemonAttackService);
 
         // register!
-        environment.jersey().register(new PokemonResource(pokemonService));
+        environment.jersey().register(new PokemonApiResource(pokemonService));
 
 
     }
