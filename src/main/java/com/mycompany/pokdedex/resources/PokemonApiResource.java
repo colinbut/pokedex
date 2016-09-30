@@ -35,14 +35,14 @@ import java.util.concurrent.TimeUnit;
 @Path("/pokemon/{id}")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
-public class PokemonResource {
+public class PokemonApiResource {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(PokemonResource.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(PokemonApiResource.class);
 
     private final PokemonService pokemonService;
 
 
-    public PokemonResource(PokemonService pokemonService) {
+    public PokemonApiResource(PokemonService pokemonService) {
         this.pokemonService = pokemonService;
     }
 
@@ -73,7 +73,7 @@ public class PokemonResource {
         Pokemon pokemon = PokemonRepresentationDomainConverter.asDomain(pokemonRepresentation);
         pokemonService.saveNewPokemon(pokemon);
         LOGGER.info("Successfully added new pokemon: {}", id);
-        return Response.created(UriBuilder.fromResource(PokemonResource.class).build(id)).build();
+        return Response.created(UriBuilder.fromResource(PokemonApiResource.class).build(id)).build();
     }
 
     @POST
@@ -83,7 +83,7 @@ public class PokemonResource {
     public Response updatePokemon(@PathParam("id") int id, @NotNull @Valid PokemonRepresentation pokemonRepresentation) {
         Pokemon pokemon = PokemonRepresentationDomainConverter.asDomain(pokemonRepresentation);
         pokemonService.updatePokemon(pokemon);
-        return Response.created(UriBuilder.fromResource(PokemonResource.class).build(id)).build();
+        return Response.created(UriBuilder.fromResource(PokemonApiResource.class).build(id)).build();
     }
 
     @DELETE
@@ -94,7 +94,7 @@ public class PokemonResource {
         LOGGER.info("Deleting pokemon: {}", id);
         pokemonService.deletePokemon(id);
         LOGGER.info("Successfully deleted pokemon: {}", id);
-        return Response.created(UriBuilder.fromResource(PokemonResource.class).build(id)).build();
+        return Response.created(UriBuilder.fromResource(PokemonApiResource.class).build(id)).build();
     }
 
 }
