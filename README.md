@@ -75,12 +75,14 @@ Note that 25 is the pokemon index of Pikachu :heart_eyes:
     - JDBI
     - SLF4J/Logback
     - Liquibase
+    - Freemarker
 
 ### Dropwizard Modules
 
 - dropwizard-core
 - dropwizard-jdbi
 - dropwizard-migrations
+- dropwizard-views-freemarker
 
 ### Database
 
@@ -105,6 +107,10 @@ java -jar target/pokedex-1.0-SNAPSHOT.jar db rollback src/main/resources/pokedex
 ```
 
 where `--count` tag indicates number of patches to rollback
+
+### View
+
+Freemarker template engine is used to render views of the resources in a nicely representation for display.
 
 
 
