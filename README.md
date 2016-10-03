@@ -76,6 +76,7 @@ Note that 25 is the pokemon index of Pikachu :heart_eyes:
     - SLF4J/Logback
     - Liquibase
     - Freemarker
+    - Mustache
 
 ### Dropwizard Modules
 
@@ -83,6 +84,7 @@ Note that 25 is the pokemon index of Pikachu :heart_eyes:
 - dropwizard-jdbi
 - dropwizard-migrations
 - dropwizard-views-freemarker
+- dropwizard-views-mustache
 
 ### Database
 
@@ -110,7 +112,7 @@ where `--count` tag indicates number of patches to rollback
 
 ### View
 
-Freemarker template engine is used to render views of the resources in a nicely representation for display.
+Freemarker/Mustache template engine is used to render views of the resources in a nicely representation for display.
 
 
 
