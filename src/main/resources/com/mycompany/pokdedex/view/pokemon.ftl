@@ -1,4 +1,4 @@
-<#-- @ftlvariable name="" type="com.mycompany.pokedex.view.PokemonView" -->
+<#-- @ftlvariable name="" type="com.mycompany.pokdedex.view.PokemonView" -->
 <html>
     <body>
         <h1>${pokemon.id?html} - ${pokemon.name?html}</h1>
@@ -9,12 +9,11 @@
         </table>
         <h2>Attacks:</h2>
         <table>
-            <#list pokemon.attacks as attacks>
-                <tr><th>Name</th><th>Power</th><th>Accuracy</th><th>Type</th></tr>
-                <#items as attack>
-                    <tr><td>${attack.name}</td><td>${attack.power}</td><td>${attack.accuracy}</td><td>${attack.type}</td></tr>
-                </#items>
+            <tr><th>Name</th><th>Power</th><th>Accuracy</th><th>Type</th></tr>
+            <#list pokemon.attacks as attack>
+                <tr><td>${attack.name}</td><td>${attack.power}</td><td>${attack.accuracy}</td><td>${attack.type}</td></tr>
             </#list>
         </table>
+
     </body>
 </html>
