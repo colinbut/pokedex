@@ -12,7 +12,7 @@ public enum Type {
     WATER,
     NORMAL,
     FLYING,
-    POSION,
+    POISON,
     ELECTRIC,
     ROCK,
     PSYCHIC,
