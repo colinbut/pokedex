@@ -48,8 +48,8 @@ public class PokemonApiResource {
 
 
     @GET
-    @Timed
-    @Metered
+    @Timed(name = "showAll-timed-get")
+    @Metered(name = "showAll-metered-get")
     @ExceptionMetered
     @CacheControl(maxAge = 12, maxAgeUnit = TimeUnit.HOURS)
     public PokemonRepresentation getPokemon(@PathParam("id") int id) {
@@ -65,8 +65,8 @@ public class PokemonApiResource {
     }
 
     @PUT
-    @Timed
-    @Metered
+    @Timed(name = "showAll-timed-put")
+    @Metered(name = "showAll-metered-put")
     @ExceptionMetered
     public Response addPokemon(@PathParam("id") int id, @NotNull @Valid PokemonRepresentation pokemonRepresentation) {
         LOGGER.info("Adding pokemon {}", pokemonRepresentation);
@@ -77,8 +77,8 @@ public class PokemonApiResource {
     }
 
     @POST
-    @Timed
-    @Metered
+    @Timed(name = "showAll-timed-post")
+    @Metered(name = "showAll-metered-post")
     @ExceptionMetered
     public Response updatePokemon(@PathParam("id") int id, @NotNull @Valid PokemonRepresentation pokemonRepresentation) {
         Pokemon pokemon = PokemonRepresentationDomainConverter.asDomain(pokemonRepresentation);
@@ -87,8 +87,8 @@ public class PokemonApiResource {
     }
 
     @DELETE
-    @Timed
-    @Metered
+    @Timed(name = "showAll-timed-delete")
+    @Metered(name = "showAll-metered-delete")
     @ExceptionMetered
     public Response deletePokemon(@PathParam("id") int id) {
         LOGGER.info("Deleting pokemon: {}", id);
