@@ -13,6 +13,7 @@ import com.mycompany.pokdedex.db.PokemonAttackDao;
 import com.mycompany.pokdedex.db.PokemonDao;
 import com.mycompany.pokdedex.db.TypeDao;
 import com.mycompany.pokdedex.resources.PokemonApiResource;
+import com.mycompany.pokdedex.resources.PokemonViewResource;
 import com.sun.javafx.collections.MappingChange;
 import io.dropwizard.Application;
 import io.dropwizard.db.PooledDataSourceFactory;
@@ -69,7 +70,7 @@ public class PokedexApplication extends Application<PokedexConfiguration> {
 
         // register!
         environment.jersey().register(new PokemonApiResource(pokemonService));
-
+        environment.jersey().register(new PokemonViewResource(pokemonService));
     }
 
 }
