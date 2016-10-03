@@ -6,13 +6,22 @@
 package com.mycompany.pokdedex.health;
 
 import com.codahale.metrics.health.HealthCheck;
+import com.mycompany.pokdedex.core.service.PokemonService;
 
 public class PokemonServiceHealthCheck extends HealthCheck {
 
+    private PokemonService pokemonService;
+
+    public PokemonServiceHealthCheck(PokemonService pokemonService){
+        this.pokemonService = pokemonService;
+    }
 
 
     @Override
     protected Result check() throws Exception {
-        return null;
+        if (pokemonService.getPokemon(1) != null) {
+            return Result.healthy();
+        }
+        return Result.unhealthy("Unable to retrieve an example (1st) pokemon from Pokemon Service");
     }
 }
