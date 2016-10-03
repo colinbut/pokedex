@@ -120,7 +120,7 @@
   </dependencyManagement>
   <properties>
     <dropwizard.version>1.0.0</dropwizard.version>
-    <mainClass>com.mycompany.pokdedex.PokedexApplication</mainClass>
+    <mainClass>com.mycompany.pokedex.PokedexApplication</mainClass>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
