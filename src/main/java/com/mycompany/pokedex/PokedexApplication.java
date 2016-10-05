@@ -46,6 +46,7 @@ public class PokedexApplication extends Application<PokedexConfiguration> {
 
         bootstrap.addBundle(new ViewBundle<PokedexConfiguration>());
 
+        bootstrap.addBundle(new AssetsBundle("/assets/", "/", "index.html"));
         bootstrap.addBundle(new AssetsBundle("/assets/css", "/css", null, "css"));
         bootstrap.addBundle(new AssetsBundle("/assets/js", "/js", null, "js"));
         bootstrap.addBundle(new AssetsBundle("/assets/fonts", "/fonts", null, "fonts"));
@@ -69,6 +70,8 @@ public class PokedexApplication extends Application<PokedexConfiguration> {
         final AttackService attackService = new AttackServiceImpl(attackDao, typeService);
         final PokemonAttackService pokemonAttackService = new PokemonAttackServiceImpl(pokemonAttackDao);
         final PokemonService pokemonService = new PokemonServiceImpl(pokemonDao, attackService, typeService, pokemonAttackService);
+
+        environment.jersey().setUrlPattern("/api/*");
 
         // register!
         environment.jersey().register(new PokemonApiResource(pokemonService));
