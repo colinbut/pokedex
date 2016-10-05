@@ -15,6 +15,7 @@ import com.mycompany.pokedex.db.TypeDao;
 import com.mycompany.pokedex.resources.PokemonApiResource;
 import com.mycompany.pokedex.resources.PokemonViewResource;
 import io.dropwizard.Application;
+import io.dropwizard.assets.AssetsBundle;
 import io.dropwizard.db.PooledDataSourceFactory;
 import io.dropwizard.jdbi.DBIFactory;
 import io.dropwizard.migrations.MigrationsBundle;
@@ -44,6 +45,10 @@ public class PokedexApplication extends Application<PokedexConfiguration> {
         });
 
         bootstrap.addBundle(new ViewBundle<PokedexConfiguration>());
+
+        bootstrap.addBundle(new AssetsBundle("/assets/css", "/css", null, "css"));
+        bootstrap.addBundle(new AssetsBundle("/assets/js", "/js", null, "js"));
+        bootstrap.addBundle(new AssetsBundle("/assets/fonts", "/fonts", null, "fonts"));
     }
 
     @Override
