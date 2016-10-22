@@ -5,8 +5,8 @@
  */
 package com.mycompany.pokedex.core.service;
 
-import com.mycompany.pokedex.db.PokemonAttackDao;
-import com.mycompany.pokedex.db.dto.PokemonAttackDto;
+import com.mycompany.pokedex.db.jdbi.PokemonAttackDao;
+import com.mycompany.pokedex.db.jdbi.dto.PokemonAttackDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

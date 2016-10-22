@@ -3,10 +3,10 @@
  * | Copyright © 2016 Colin But. All rights reserved.
  * |-------------------------------------------------
  */
-package com.mycompany.pokedex.db;
+package com.mycompany.pokedex.db.jdbi;
 
-import com.mycompany.pokedex.db.dto.AttackDto;
-import com.mycompany.pokedex.db.mapper.JDBIAttackDtoMapper;
+import com.mycompany.pokedex.db.jdbi.dto.AttackDto;
+import com.mycompany.pokedex.db.jdbi.mapper.JDBIAttackDtoMapper;
 import org.skife.jdbi.v2.sqlobject.Bind;
 import org.skife.jdbi.v2.sqlobject.SqlQuery;
 import org.skife.jdbi.v2.sqlobject.customizers.RegisterMapper;

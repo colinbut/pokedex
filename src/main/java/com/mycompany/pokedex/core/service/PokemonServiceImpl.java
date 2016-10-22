@@ -8,8 +8,8 @@ package com.mycompany.pokedex.core.service;
 import com.mycompany.pokedex.core.domain.Attack;
 import com.mycompany.pokedex.core.domain.Pokemon;
 import com.mycompany.pokedex.core.domain.Type;
-import com.mycompany.pokedex.db.PokemonDao;
-import com.mycompany.pokedex.db.dto.PokemonDto;
+import com.mycompany.pokedex.db.jdbi.PokemonDao;
+import com.mycompany.pokedex.db.jdbi.dto.PokemonDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

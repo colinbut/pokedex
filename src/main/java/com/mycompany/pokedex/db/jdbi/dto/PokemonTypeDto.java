@@ -3,7 +3,7 @@
  * | Copyright © 2016 Colin But. All rights reserved.
  * |-------------------------------------------------
  */
-package com.mycompany.pokedex.db.dto;
+package com.mycompany.pokedex.db.jdbi.dto;
 
 import java.util.Objects;
 

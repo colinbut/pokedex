@@ -3,9 +3,9 @@
  * | Copyright © 2016 Colin But. All rights reserved.
  * |-------------------------------------------------
  */
-package com.mycompany.pokedex.db.mapper;
+package com.mycompany.pokedex.db.jdbi.mapper;
 
-import com.mycompany.pokedex.db.dto.PokemonDto;
+import com.mycompany.pokedex.db.jdbi.dto.PokemonDto;
 import org.apache.log4j.Logger;
 import org.skife.jdbi.v2.StatementContext;
 import org.skife.jdbi.v2.tweak.ResultSetMapper;
