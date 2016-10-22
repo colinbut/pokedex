@@ -17,6 +17,9 @@ import com.mycompany.pokedex.db.jdbi.TypeDaoJDBI;
 import com.mycompany.pokedex.db.hibernate.entity.AttackEntity;
 import com.mycompany.pokedex.db.hibernate.entity.PokemonEntity;
 import com.mycompany.pokedex.db.hibernate.entity.PokemonTypeEntity;
+import com.mycompany.pokedex.health.ApplicationHealthCheck;
+import com.mycompany.pokedex.health.DatabaseHealthCheck;
+import com.mycompany.pokedex.health.PokemonServiceHealthCheck;
 import com.mycompany.pokedex.resources.PokemonApiResource;
 import com.mycompany.pokedex.resources.PokemonViewResource;
 import io.dropwizard.Application;
@@ -85,6 +88,7 @@ public class PokedexApplication extends Application<PokedexConfiguration> {
         final AttackDaoJDBI attackDaoJDBI = dbi.onDemand(AttackDaoJDBI.class);
         final PokemonAttackDaoJDBI pokemonAttackDaoJDBI = dbi.onDemand(PokemonAttackDaoJDBI.class);
 
+        // initialise (load) Hibernate DAOs
         final PokemonDaoHibernate pokemonDaoHibernate = new PokemonDaoHibernate(hibernateBundle.getSessionFactory());
         final AttackDaoHibernate attackDaoHibernate = new AttackDaoHibernate(hibernateBundle.getSessionFactory()); // don't think we need this
 
@@ -96,7 +100,12 @@ public class PokedexApplication extends Application<PokedexConfiguration> {
 
         environment.jersey().setUrlPattern("/api/*");
 
-        // register!
+        // register healthchecks!
+        environment.healthChecks().register("pokemon-service", new PokemonServiceHealthCheck(pokemonService));
+        environment.healthChecks().register("database", new DatabaseHealthCheck(dbi, configuration.getDatabase().getValidationQuery()));
+        environment.healthChecks().register("application", new ApplicationHealthCheck());
+
+        // register application resources!
         environment.jersey().register(new PokemonApiResource(pokemonService));
         environment.jersey().register(new PokemonViewResource(pokemonService));
     }
