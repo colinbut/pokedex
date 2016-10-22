@@ -8,6 +8,8 @@ import com.mycompany.pokedex.core.service.PokemonService;
 import com.mycompany.pokedex.core.service.PokemonServiceImpl;
 import com.mycompany.pokedex.core.service.TypeService;
 import com.mycompany.pokedex.core.service.TypeServiceImpl;
+import com.mycompany.pokedex.db.hibernate.dao.AttackDaoHibernate;
+import com.mycompany.pokedex.db.hibernate.dao.PokemonDaoHibernate;
 import com.mycompany.pokedex.db.jdbi.AttackDaoJDBI;
 import com.mycompany.pokedex.db.jdbi.PokemonAttackDaoJDBI;
 import com.mycompany.pokedex.db.jdbi.PokemonDaoJDBI;
@@ -30,9 +32,29 @@ import org.skife.jdbi.v2.DBI;
 
 public class PokedexApplication extends Application<PokedexConfiguration> {
 
-    public static void main(final String[] args) throws Exception {
-        new PokedexApplication().run(args);
-    }
+    // declaring bundles here since especially the hibernate bundle is being referenced in the
+    // Application#run method
+
+    /**
+     * The hibernate bundle
+     */
+    private final HibernateBundle<PokedexConfiguration> hibernateBundle = new HibernateBundle<PokedexConfiguration>(PokemonEntity.class,
+        AttackEntity.class,
+        PokemonTypeEntity.class) {
+
+        @Override
+        public PooledDataSourceFactory getDataSourceFactory(PokedexConfiguration pokedexConfiguration) {
+            return pokedexConfiguration.getDatabase();
+        }
+    };
+
+    private MigrationsBundle<PokedexConfiguration> migrationsBundle = new MigrationsBundle<PokedexConfiguration>() {
+        @Override
+        public PooledDataSourceFactory getDataSourceFactory(PokedexConfiguration pokedexConfiguration) {
+            return pokedexConfiguration.getDatabase();
+        }
+    };
+
 
     @Override
     public String getName() {
@@ -41,25 +63,9 @@ public class PokedexApplication extends Application<PokedexConfiguration> {
 
     @Override
     public void initialize(final Bootstrap<PokedexConfiguration> bootstrap) {
-        bootstrap.addBundle(new MigrationsBundle<PokedexConfiguration>() {
-            @Override
-            public PooledDataSourceFactory getDataSourceFactory(PokedexConfiguration pokedexConfiguration) {
-                return pokedexConfiguration.getDatabase();
-            }
-        });
-
-        bootstrap.addBundle(new HibernateBundle<PokedexConfiguration>(PokemonEntity.class,
-            AttackEntity.class,
-            PokemonTypeEntity.class) {
-
-            @Override
-            public PooledDataSourceFactory getDataSourceFactory(PokedexConfiguration pokedexConfiguration) {
-                return pokedexConfiguration.getDatabase();
-            }
-        });
-
+        bootstrap.addBundle(migrationsBundle);
+        bootstrap.addBundle(hibernateBundle);
         bootstrap.addBundle(new ViewBundle<PokedexConfiguration>());
-
         bootstrap.addBundle(new AssetsBundle("/assets/", "/", "index.html"));
         bootstrap.addBundle(new AssetsBundle("/assets/css", "/css", null, "css"));
         bootstrap.addBundle(new AssetsBundle("/assets/js", "/js", null, "js"));
@@ -73,11 +79,14 @@ public class PokedexApplication extends Application<PokedexConfiguration> {
         final DBIFactory dbiFactory = new DBIFactory();
         final DBI dbi = dbiFactory.build(environment, configuration.getDatabase(), "mysql");
 
-        // initialise (load) DAOs
+        // initialise (load) JDBI DAOs
         final PokemonDaoJDBI pokemonDao = dbi.onDemand(PokemonDaoJDBI.class);
         final TypeDaoJDBI typeDaoJDBI = dbi.onDemand(TypeDaoJDBI.class);
         final AttackDaoJDBI attackDaoJDBI = dbi.onDemand(AttackDaoJDBI.class);
         final PokemonAttackDaoJDBI pokemonAttackDaoJDBI = dbi.onDemand(PokemonAttackDaoJDBI.class);
+
+        final PokemonDaoHibernate pokemonDaoHibernate = new PokemonDaoHibernate(hibernateBundle.getSessionFactory());
+        final AttackDaoHibernate attackDaoHibernate = new AttackDaoHibernate(hibernateBundle.getSessionFactory()); // don't think we need this
 
         // manual Dependency Injection (for now at least)
         final TypeService typeService = new TypeServiceImpl(typeDaoJDBI);
@@ -90,6 +99,11 @@ public class PokedexApplication extends Application<PokedexConfiguration> {
         // register!
         environment.jersey().register(new PokemonApiResource(pokemonService));
         environment.jersey().register(new PokemonViewResource(pokemonService));
+    }
+
+
+    public static void main(final String[] args) throws Exception {
+        new PokedexApplication().run(args);
     }
 
 }
