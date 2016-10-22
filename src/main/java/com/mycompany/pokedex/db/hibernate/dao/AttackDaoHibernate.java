@@ -11,9 +11,9 @@ import org.hibernate.SessionFactory;
 
 import java.util.List;
 
-public class AttackDao extends AbstractDAO<AttackEntity> {
+public class AttackDaoHibernate extends AbstractDAO<AttackEntity> {
 
-    public AttackDao(SessionFactory sessionFactory) {
+    public AttackDaoHibernate(SessionFactory sessionFactory) {
         super(sessionFactory);
     }
 

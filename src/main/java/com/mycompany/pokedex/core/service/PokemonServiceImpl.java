@@ -8,7 +8,7 @@ package com.mycompany.pokedex.core.service;
 import com.mycompany.pokedex.core.domain.Attack;
 import com.mycompany.pokedex.core.domain.Pokemon;
 import com.mycompany.pokedex.core.domain.Type;
-import com.mycompany.pokedex.db.jdbi.PokemonDao;
+import com.mycompany.pokedex.db.jdbi.PokemonDaoJDBI;
 import com.mycompany.pokedex.db.jdbi.dto.PokemonDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,16 +20,16 @@ public class PokemonServiceImpl implements PokemonService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(PokemonServiceImpl.class);
 
-    private final PokemonDao pokemonDao;
+    private final PokemonDaoJDBI pokemonDaoJDBI;
     private final AttackService attackService;
     private final TypeService typeService;
     private final PokemonAttackService pokemonAttackService;
 
-    public PokemonServiceImpl(PokemonDao pokemonDao,
+    public PokemonServiceImpl(PokemonDaoJDBI pokemonDaoJDBI,
                               AttackService attackService,
                               TypeService typeService,
                               PokemonAttackService pokemonAttackService) {
-        this.pokemonDao = pokemonDao;
+        this.pokemonDaoJDBI = pokemonDaoJDBI;
         this.attackService = attackService;
         this.typeService = typeService;
         this.pokemonAttackService = pokemonAttackService;
@@ -39,14 +39,14 @@ public class PokemonServiceImpl implements PokemonService {
     @Override
     public void saveNewPokemon(Pokemon pokemon) {
         LOGGER.info("Inserting new pokemon {} into system", pokemon);
-        pokemonDao.insert(pokemon.getName(), pokemon.getHitPoints(), pokemon.getCombatPower(), 1);
+        pokemonDaoJDBI.insert(pokemon.getName(), pokemon.getHitPoints(), pokemon.getCombatPower(), 1);
         LOGGER.info("Inserted new pokemon {} into the system", pokemon);
     }
 
     @Override
     public Pokemon getPokemon(int id) {
         LOGGER.info("Fetching pokemon with id: {}", id);
-        PokemonDto pokemonDto = pokemonDao.fetch(id);
+        PokemonDto pokemonDto = pokemonDaoJDBI.fetch(id);
         Pokemon pokemon = new PokemonDtoTransformer().transformDtoToDomain(pokemonDto);
         LOGGER.debug("Fetched pokemon {} with id: {} from the system", pokemon, id);
         return pokemon;
@@ -62,7 +62,7 @@ public class PokemonServiceImpl implements PokemonService {
     @Override
     public void deletePokemon(int id) {
         LOGGER.info("Deleting pokemon with id: {} from the system", id);
-        pokemonDao.delete(id);
+        pokemonDaoJDBI.delete(id);
         LOGGER.info("Deleted pokemon with id: {}", id);
     }
 

@@ -14,7 +14,7 @@ import org.skife.jdbi.v2.sqlobject.customizers.RegisterMapper;
 import java.util.List;
 
 @RegisterMapper(JDBIPokemonAttackDtoMapper.class)
-public interface PokemonAttackDao {
+public interface PokemonAttackDaoJDBI {
 
     /**
      * Can be simplified to just return list of Integers because all we're interested in

@@ -12,7 +12,7 @@ import org.skife.jdbi.v2.sqlobject.customizers.Mapper;
 
 import java.util.List;
 
-public interface TypeDao {
+public interface TypeDaoJDBI {
 
     @SqlQuery("SELECT * FROM POKEMON_TYPE")
     @Mapper(JDBIPokemonTypeDtoMapper.class)

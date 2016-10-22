@@ -14,7 +14,7 @@ import org.skife.jdbi.v2.sqlobject.customizers.RegisterMapper;
 import java.util.List;
 
 @RegisterMapper(JDBIAttackDtoMapper.class)
-public interface AttackDao {
+public interface AttackDaoJDBI {
 
     /**
      * Using in-memory maps so no need to query to DB

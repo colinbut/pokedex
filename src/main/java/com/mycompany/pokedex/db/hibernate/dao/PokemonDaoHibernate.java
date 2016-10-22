@@ -9,9 +9,9 @@ import com.mycompany.pokedex.db.hibernate.entity.PokemonEntity;
 import io.dropwizard.hibernate.AbstractDAO;
 import org.hibernate.SessionFactory;
 
-public class PokemonDao extends AbstractDAO<PokemonEntity> {
+public class PokemonDaoHibernate extends AbstractDAO<PokemonEntity> {
 
-    public PokemonDao(SessionFactory sessionFactory) {
+    public PokemonDaoHibernate(SessionFactory sessionFactory) {
         super(sessionFactory);
     }
 

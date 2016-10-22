@@ -12,7 +12,7 @@ import org.skife.jdbi.v2.sqlobject.SqlQuery;
 import org.skife.jdbi.v2.sqlobject.SqlUpdate;
 import org.skife.jdbi.v2.sqlobject.customizers.Mapper;
 
-public interface PokemonDao {
+public interface PokemonDaoJDBI {
 
     @SqlUpdate("INSERT INTO POKEMON (name, hit_points, combat_power, type_id) " +
         "VALUES (:name, :hit_points, :combat_power, :type_id)")

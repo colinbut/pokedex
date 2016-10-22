@@ -6,7 +6,7 @@
 package com.mycompany.pokedex.core.service;
 
 import com.mycompany.pokedex.core.domain.Attack;
-import com.mycompany.pokedex.db.jdbi.AttackDao;
+import com.mycompany.pokedex.db.jdbi.AttackDaoJDBI;
 import com.mycompany.pokedex.db.jdbi.dto.AttackDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,14 +19,14 @@ public class AttackServiceImpl implements AttackService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AttackServiceImpl.class);
 
-    private final AttackDao attackDao;
+    private final AttackDaoJDBI attackDaoJDBI;
     private final TypeService typeService;
 
     private Map<Integer, AttackDto> attackMap = new HashMap<>();
 
 
-    public AttackServiceImpl(AttackDao attackDao, TypeService typeService) {
-        this.attackDao = attackDao;
+    public AttackServiceImpl(AttackDaoJDBI attackDaoJDBI, TypeService typeService) {
+        this.attackDaoJDBI = attackDaoJDBI;
         this.typeService = typeService;
         initialize();
     }
@@ -34,7 +34,7 @@ public class AttackServiceImpl implements AttackService {
     private void initialize() {
         LOGGER.debug("Loading data from the database into memory");
 
-        List<AttackDto> attackDtoList = attackDao.fetchList();
+        List<AttackDto> attackDtoList = attackDaoJDBI.fetchList();
         for (AttackDto attackDto : attackDtoList) {
             LOGGER.trace("Inserted {} into memory map", attackDto);
             attackMap.put(attackDto.getId(), attackDto);

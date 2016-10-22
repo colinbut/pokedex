@@ -8,10 +8,10 @@ import com.mycompany.pokedex.core.service.PokemonService;
 import com.mycompany.pokedex.core.service.PokemonServiceImpl;
 import com.mycompany.pokedex.core.service.TypeService;
 import com.mycompany.pokedex.core.service.TypeServiceImpl;
-import com.mycompany.pokedex.db.jdbi.AttackDao;
-import com.mycompany.pokedex.db.jdbi.PokemonAttackDao;
-import com.mycompany.pokedex.db.jdbi.PokemonDao;
-import com.mycompany.pokedex.db.jdbi.TypeDao;
+import com.mycompany.pokedex.db.jdbi.AttackDaoJDBI;
+import com.mycompany.pokedex.db.jdbi.PokemonAttackDaoJDBI;
+import com.mycompany.pokedex.db.jdbi.PokemonDaoJDBI;
+import com.mycompany.pokedex.db.jdbi.TypeDaoJDBI;
 import com.mycompany.pokedex.db.hibernate.entity.AttackEntity;
 import com.mycompany.pokedex.db.hibernate.entity.PokemonEntity;
 import com.mycompany.pokedex.db.hibernate.entity.PokemonTypeEntity;
@@ -74,15 +74,15 @@ public class PokedexApplication extends Application<PokedexConfiguration> {
         final DBI dbi = dbiFactory.build(environment, configuration.getDatabase(), "mysql");
 
         // initialise (load) DAOs
-        final PokemonDao pokemonDao = dbi.onDemand(PokemonDao.class);
-        final TypeDao typeDao = dbi.onDemand(TypeDao.class);
-        final AttackDao attackDao = dbi.onDemand(AttackDao.class);
-        final PokemonAttackDao pokemonAttackDao = dbi.onDemand(PokemonAttackDao.class);
+        final PokemonDaoJDBI pokemonDao = dbi.onDemand(PokemonDaoJDBI.class);
+        final TypeDaoJDBI typeDaoJDBI = dbi.onDemand(TypeDaoJDBI.class);
+        final AttackDaoJDBI attackDaoJDBI = dbi.onDemand(AttackDaoJDBI.class);
+        final PokemonAttackDaoJDBI pokemonAttackDaoJDBI = dbi.onDemand(PokemonAttackDaoJDBI.class);
 
         // manual Dependency Injection (for now at least)
-        final TypeService typeService = new TypeServiceImpl(typeDao);
-        final AttackService attackService = new AttackServiceImpl(attackDao, typeService);
-        final PokemonAttackService pokemonAttackService = new PokemonAttackServiceImpl(pokemonAttackDao);
+        final TypeService typeService = new TypeServiceImpl(typeDaoJDBI);
+        final AttackService attackService = new AttackServiceImpl(attackDaoJDBI, typeService);
+        final PokemonAttackService pokemonAttackService = new PokemonAttackServiceImpl(pokemonAttackDaoJDBI);
         final PokemonService pokemonService = new PokemonServiceImpl(pokemonDao, attackService, typeService, pokemonAttackService);
 
         environment.jersey().setUrlPattern("/api/*");
