@@ -3,7 +3,7 @@
  * | Copyright © 2016 Colin But. All rights reserved.
  * |-------------------------------------------------
  */
-package com.mycompany.pokedex.db.entity;
+package com.mycompany.pokedex.db.hibernate.entity;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
