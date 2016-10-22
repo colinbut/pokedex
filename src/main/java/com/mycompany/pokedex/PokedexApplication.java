@@ -12,11 +12,15 @@ import com.mycompany.pokedex.db.AttackDao;
 import com.mycompany.pokedex.db.PokemonAttackDao;
 import com.mycompany.pokedex.db.PokemonDao;
 import com.mycompany.pokedex.db.TypeDao;
+import com.mycompany.pokedex.db.entity.AttackEntity;
+import com.mycompany.pokedex.db.entity.PokemonEntity;
+import com.mycompany.pokedex.db.entity.PokemonTypeEntity;
 import com.mycompany.pokedex.resources.PokemonApiResource;
 import com.mycompany.pokedex.resources.PokemonViewResource;
 import io.dropwizard.Application;
 import io.dropwizard.assets.AssetsBundle;
 import io.dropwizard.db.PooledDataSourceFactory;
+import io.dropwizard.hibernate.HibernateBundle;
 import io.dropwizard.jdbi.DBIFactory;
 import io.dropwizard.migrations.MigrationsBundle;
 import io.dropwizard.setup.Bootstrap;
@@ -38,6 +42,16 @@ public class PokedexApplication extends Application<PokedexConfiguration> {
     @Override
     public void initialize(final Bootstrap<PokedexConfiguration> bootstrap) {
         bootstrap.addBundle(new MigrationsBundle<PokedexConfiguration>() {
+            @Override
+            public PooledDataSourceFactory getDataSourceFactory(PokedexConfiguration pokedexConfiguration) {
+                return pokedexConfiguration.getDatabase();
+            }
+        });
+
+        bootstrap.addBundle(new HibernateBundle<PokedexConfiguration>(PokemonEntity.class,
+            AttackEntity.class,
+            PokemonTypeEntity.class) {
+
             @Override
             public PooledDataSourceFactory getDataSourceFactory(PokedexConfiguration pokedexConfiguration) {
                 return pokedexConfiguration.getDatabase();
