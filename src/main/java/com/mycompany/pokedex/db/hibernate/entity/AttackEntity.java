@@ -13,10 +13,18 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import java.util.HashSet;
 import java.util.Set;
 
+@NamedQueries( {
+    @NamedQuery(
+        name = "findAllAttacks",
+        query = "from Attack a"
+    )
+})
 @Entity
 @Table(name = "attack")
 public class AttackEntity {
