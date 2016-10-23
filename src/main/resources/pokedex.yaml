@@ -1,5 +1,5 @@
-# can be hibernate or jdbi
-dataAccess: hibernate
+# can be Hibernate or JDBI
+dataAccess: Hibernate
 
 server:
   type: simple
