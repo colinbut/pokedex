@@ -12,6 +12,7 @@ import com.mycompany.pokedex.api.PokemonRepresentation;
 import com.mycompany.pokedex.converters.PokemonRepresentationDomainConverter;
 import com.mycompany.pokedex.core.domain.Pokemon;
 import com.mycompany.pokedex.core.service.PokemonService;
+import com.mycompany.pokedex.db.hibernate.dao.PokemonDaoHibernate;
 import io.dropwizard.jersey.caching.CacheControl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,9 +42,12 @@ public class PokemonApiResource {
 
     private final PokemonService pokemonService;
 
+    private final PokemonDaoHibernate pokemonDaoHibernate;
 
-    public PokemonApiResource(PokemonService pokemonService) {
+
+    public PokemonApiResource(PokemonService pokemonService, PokemonDaoHibernate pokemonDaoHibernate) {
         this.pokemonService = pokemonService;
+        this.pokemonDaoHibernate = pokemonDaoHibernate;
     }
 
 

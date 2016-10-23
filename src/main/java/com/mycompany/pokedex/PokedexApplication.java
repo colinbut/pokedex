@@ -106,7 +106,7 @@ public class PokedexApplication extends Application<PokedexConfiguration> {
         environment.healthChecks().register("application", new ApplicationHealthCheck());
 
         // register application resources!
-        environment.jersey().register(new PokemonApiResource(pokemonService));
+        environment.jersey().register(new PokemonApiResource(pokemonService, pokemonDaoHibernate));
         environment.jersey().register(new PokemonViewResource(pokemonService, pokemonDaoHibernate));
     }
 
