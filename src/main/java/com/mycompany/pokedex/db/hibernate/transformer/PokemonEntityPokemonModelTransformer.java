@@ -8,6 +8,7 @@ package com.mycompany.pokedex.db.hibernate.transformer;
 import com.mycompany.pokedex.core.domain.Pokemon;
 import com.mycompany.pokedex.db.hibernate.entity.PokemonEntity;
 
+
 public final class PokemonEntityPokemonModelTransformer {
 
     private PokemonEntityPokemonModelTransformer() {}
@@ -18,6 +19,7 @@ public final class PokemonEntityPokemonModelTransformer {
         pokemon.setName(pokemonEntity.getName());
         pokemon.setHitPoints(pokemonEntity.getHitPoints());
         pokemon.setCombatPower(pokemonEntity.getCombatPower());
+        pokemon.setAttacks(AttackEntityAttackModelTransformer.getModelListFromEntitySet(pokemonEntity.getAttacks()));
         return pokemon;
     }
 
@@ -27,6 +29,7 @@ public final class PokemonEntityPokemonModelTransformer {
         pokemonEntity.setName(pokemon.getName());
         pokemonEntity.setHitPoints(pokemon.getHitPoints());
         pokemonEntity.setCombatPower(pokemon.getCombatPower());
+        pokemonEntity.setAttacks(AttackEntityAttackModelTransformer.getEntitySetFromModelList(pokemon.getAttacks()));
         return pokemonEntity;
     }
 }
