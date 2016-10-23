@@ -55,15 +55,14 @@ public class PokemonApiResource {
     private static final Logger LOGGER = LoggerFactory.getLogger(PokemonApiResource.class);
 
     private final PokemonDaoJDBI pokemonDaoJDBI;
+    private final TypeDaoJDBI typeDaoJDBI;
+    private final AttackDaoJDBI attackDaoJDBI;
+    private final PokemonAttackDaoJDBI pokemonAttackDaoJDBI;
+
     private final PokemonDaoHibernate pokemonDaoHibernate;
 
-    private final TypeDaoJDBI typeDaoJDBI;
     private Map<Integer, String> typeMap = new HashMap<>();
-
-    private final AttackDaoJDBI attackDaoJDBI;
     private Map<Integer, AttackDto> attackMap = new HashMap<>();
-
-    private final PokemonAttackDaoJDBI pokemonAttackDaoJDBI;
 
 
     public PokemonApiResource(PokemonDaoJDBI pokemonDaoJDBI,
@@ -77,13 +76,20 @@ public class PokemonApiResource {
         this.attackDaoJDBI = attackDaoJDBI;
         this.pokemonAttackDaoJDBI = pokemonAttackDaoJDBI;
 
+        intiializePokemonTypeMap();
+        initializeAttackMap();
+    }
+
+    private void intiializePokemonTypeMap() {
         List<PokemonTypeDto> pokemonDtoList = typeDaoJDBI.fetch();
         for (PokemonTypeDto pokemonTypeDto : pokemonDtoList) {
             LOGGER.trace("Inserting data {} into memory", pokemonTypeDto);
             typeMap.put(pokemonTypeDto.getId(), pokemonTypeDto.getName());
         }
-        LOGGER.debug("Finished loading data from the database into memory");
+        LOGGER.debug("Finished loading pokemon type data from the database into memory");
+    }
 
+    private void initializeAttackMap() {
         List<AttackDto> attackDtoList = attackDaoJDBI.fetchList();
         for (AttackDto attackDto : attackDtoList) {
             LOGGER.trace("Inserted {} into memory map", attackDto);
