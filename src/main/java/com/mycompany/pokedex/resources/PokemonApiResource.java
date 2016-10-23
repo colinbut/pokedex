@@ -124,6 +124,7 @@ public class PokemonApiResource {
     @Timed(name = "showAll-timed-put")
     @Metered(name = "showAll-metered-put")
     @ExceptionMetered
+    @UnitOfWork
     public Response addPokemon(@PathParam("id") int id, @NotNull @Valid PokemonRepresentation pokemonRepresentation) {
         LOGGER.info("Adding pokemon {}", pokemonRepresentation);
         Pokemon pokemon = PokemonRepresentationDomainConverter.asDomain(pokemonRepresentation);
@@ -136,6 +137,7 @@ public class PokemonApiResource {
     @Timed(name = "showAll-timed-post")
     @Metered(name = "showAll-metered-post")
     @ExceptionMetered
+    @UnitOfWork
     public Response updatePokemon(@PathParam("id") int id, @NotNull @Valid PokemonRepresentation pokemonRepresentation) {
         Pokemon pokemon = PokemonRepresentationDomainConverter.asDomain(pokemonRepresentation);
         return Response.created(UriBuilder.fromResource(PokemonApiResource.class).build(id)).build();
@@ -145,6 +147,7 @@ public class PokemonApiResource {
     @Timed(name = "showAll-timed-delete")
     @Metered(name = "showAll-metered-delete")
     @ExceptionMetered
+    @UnitOfWork
     public Response deletePokemon(@PathParam("id") int id) {
         LOGGER.info("Deleting pokemon: {}", id);
         pokemonDaoJDBI.delete(id);
@@ -200,10 +203,7 @@ public class PokemonApiResource {
         }
     }
 
-    /**
-     * Making this an inner class right now because this is the only usage
-     * place at the moment
-     */
+
     private class AttackDtoTransformer {
 
         public Attack transformDtoToDomain(AttackDto attackDto) {
