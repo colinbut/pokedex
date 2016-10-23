@@ -70,6 +70,7 @@ public class PokemonEntity {
     }
 
     @ManyToOne
+    @JoinColumn(name = "type_id", nullable = false)
     public PokemonTypeEntity getPokemonType() {
         return pokemonType;
     }
