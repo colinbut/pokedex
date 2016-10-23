@@ -17,10 +17,10 @@ public class AttackEntityAttackModelTransformer {
 
     public static AttackEntity getEntityFromModel(Attack attack) {
         AttackEntity attackEntity = new AttackEntity();
-        attackEntity.setId(1);
         attackEntity.setAttackName(attack.getName());
         attackEntity.setPower(attack.getPower());
         attackEntity.setAccuracy(attack.getAccuracy());
+        attackEntity.setType(PokemonTypeEntityPokemonTypeTransformer.getEntityFromModel(attack.getType()));
         return attackEntity;
     }
 
@@ -29,6 +29,7 @@ public class AttackEntityAttackModelTransformer {
         attack.setName(attackEntity.getAttackName());
         attack.setPower(attackEntity.getPower());
         attack.setAccuracy(attackEntity.getAccuracy());
+        attack.setType(PokemonTypeEntityPokemonTypeTransformer.getModelFromEntity(attackEntity.getType()));
         return attack;
     }
 

@@ -1,6 +1,8 @@
 package com.mycompany.pokedex;
 
 
+import com.mycompany.pokedex.core.AttackInternalMap;
+import com.mycompany.pokedex.core.PokemonTypeInternalMap;
 import com.mycompany.pokedex.db.hibernate.dao.AttackDaoHibernate;
 import com.mycompany.pokedex.db.hibernate.dao.PokemonDaoHibernate;
 import com.mycompany.pokedex.db.jdbi.AttackDaoJDBI;
@@ -10,6 +12,7 @@ import com.mycompany.pokedex.db.jdbi.TypeDaoJDBI;
 import com.mycompany.pokedex.db.hibernate.entity.AttackEntity;
 import com.mycompany.pokedex.db.hibernate.entity.PokemonEntity;
 import com.mycompany.pokedex.db.hibernate.entity.PokemonTypeEntity;
+import com.mycompany.pokedex.db.jdbi.transformer.PokemonDtoTransformer;
 import com.mycompany.pokedex.health.ApplicationHealthCheck;
 import com.mycompany.pokedex.health.DatabaseHealthCheck;
 import com.mycompany.pokedex.resources.PokemonApiResource;
@@ -84,6 +87,11 @@ public class PokedexApplication extends Application<PokedexConfiguration> {
         final PokemonDaoHibernate pokemonDaoHibernate = new PokemonDaoHibernate(hibernateBundle.getSessionFactory());
         final AttackDaoHibernate attackDaoHibernate = new AttackDaoHibernate(hibernateBundle.getSessionFactory()); // don't think we need this
 
+        // manual Dependency Injection (for now at least)
+        final PokemonTypeInternalMap pokemonTypeInternalMap = new PokemonTypeInternalMap(typeDaoJDBI);
+        final AttackInternalMap attackInternalMap = new AttackInternalMap(attackDaoJDBI);
+        final PokemonDtoTransformer pokemonDtoTransformer = new PokemonDtoTransformer(pokemonAttackDaoJDBI,pokemonTypeInternalMap, attackInternalMap);
+
         environment.jersey().setUrlPattern("/api/*");
 
         // register healthchecks!
@@ -91,9 +99,8 @@ public class PokedexApplication extends Application<PokedexConfiguration> {
         environment.healthChecks().register("application", new ApplicationHealthCheck());
 
         // register application resources!
-        // manual Dependency Injection (for now at least)
-        environment.jersey().register(new PokemonApiResource(pokemonDaoJDBI, pokemonDaoHibernate, typeDaoJDBI, attackDaoJDBI, pokemonAttackDaoJDBI, configuration.getDataAccess()));
-        environment.jersey().register(new PokemonViewResource(pokemonDaoJDBI, pokemonDaoHibernate));
+        environment.jersey().register(new PokemonApiResource(pokemonDaoJDBI, pokemonDaoHibernate, pokemonDtoTransformer, configuration.getDataAccess()));
+        environment.jersey().register(new PokemonViewResource(pokemonDaoJDBI, pokemonDaoHibernate, pokemonDtoTransformer, configuration.getDataAccess()));
     }
 
 

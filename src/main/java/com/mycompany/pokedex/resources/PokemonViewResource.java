@@ -9,6 +9,7 @@ import com.mycompany.pokedex.core.constants.DataAccessMethod;
 import com.mycompany.pokedex.db.hibernate.dao.PokemonDaoHibernate;
 import com.mycompany.pokedex.db.hibernate.transformer.PokemonEntityPokemonModelTransformer;
 import com.mycompany.pokedex.db.jdbi.PokemonDaoJDBI;
+import com.mycompany.pokedex.db.jdbi.transformer.PokemonDtoTransformer;
 import com.mycompany.pokedex.view.PokemonView;
 import io.dropwizard.hibernate.UnitOfWork;
 import org.slf4j.Logger;
@@ -29,14 +30,20 @@ public class PokemonViewResource {
     private static final Logger LOGGER = LoggerFactory.getLogger(PokemonViewResource.class);
 
     private final PokemonDaoJDBI pokemonDaoJDBI;
-
     private final PokemonDaoHibernate pokemonDaoHibernate;
 
     private final String dataAccessMethod;
 
-    public PokemonViewResource(PokemonDaoJDBI pokemonDaoJDBI, PokemonDaoHibernate pokemonDaoHibernate, String dataAccessMethod){
+    private final PokemonDtoTransformer pokemonDtoTransformer;
+
+
+    public PokemonViewResource(PokemonDaoJDBI pokemonDaoJDBI,
+                               PokemonDaoHibernate pokemonDaoHibernate,
+                               PokemonDtoTransformer pokemonDtoTransformer,
+                               String dataAccessMethod){
         this.pokemonDaoJDBI = pokemonDaoJDBI;
         this.pokemonDaoHibernate = pokemonDaoHibernate;
+        this.pokemonDtoTransformer = pokemonDtoTransformer;
         this.dataAccessMethod = dataAccessMethod;
     }
 
@@ -45,8 +52,7 @@ public class PokemonViewResource {
     @UnitOfWork
     public PokemonView getPokemon(@PathParam("id") int id) {
         if (dataAccessMethod.equals(DataAccessMethod.JDBI)) {
-            //return new PokemonView(pokemonDaoJDBI.fetch(id));
-            return null;
+            return new PokemonView(pokemonDtoTransformer.transformDtoToDomain(pokemonDaoJDBI.fetch(id)));
         } else if (dataAccessMethod.equals(DataAccessMethod.HIBERNATE)) {
             return new PokemonView(PokemonEntityPokemonModelTransformer.getModelFromEntity(pokemonDaoHibernate.fetch(id)));
         } else {

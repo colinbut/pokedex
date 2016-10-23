@@ -11,19 +11,12 @@ import com.codahale.metrics.annotation.Timed;
 import com.mycompany.pokedex.api.PokemonRepresentation;
 import com.mycompany.pokedex.converters.PokemonRepresentationDomainConverter;
 import com.mycompany.pokedex.core.constants.DataAccessMethod;
-import com.mycompany.pokedex.core.domain.Attack;
 import com.mycompany.pokedex.core.domain.Pokemon;
-import com.mycompany.pokedex.core.domain.Type;
 import com.mycompany.pokedex.db.hibernate.dao.PokemonDaoHibernate;
 import com.mycompany.pokedex.db.hibernate.transformer.PokemonEntityPokemonModelTransformer;
-import com.mycompany.pokedex.db.jdbi.AttackDaoJDBI;
-import com.mycompany.pokedex.db.jdbi.PokemonAttackDaoJDBI;
 import com.mycompany.pokedex.db.jdbi.PokemonDaoJDBI;
-import com.mycompany.pokedex.db.jdbi.TypeDaoJDBI;
-import com.mycompany.pokedex.db.jdbi.dto.AttackDto;
-import com.mycompany.pokedex.db.jdbi.dto.PokemonAttackDto;
 import com.mycompany.pokedex.db.jdbi.dto.PokemonDto;
-import com.mycompany.pokedex.db.jdbi.dto.PokemonTypeDto;
+import com.mycompany.pokedex.db.jdbi.transformer.PokemonDtoTransformer;
 import io.dropwizard.hibernate.UnitOfWork;
 import io.dropwizard.jersey.caching.CacheControl;
 import org.slf4j.Logger;
@@ -43,10 +36,6 @@ import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriBuilder;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 @Path("/pokemon/{id}")
@@ -57,52 +46,21 @@ public class PokemonApiResource {
     private static final Logger LOGGER = LoggerFactory.getLogger(PokemonApiResource.class);
 
     private final PokemonDaoJDBI pokemonDaoJDBI;
-    private final TypeDaoJDBI typeDaoJDBI;
-    private final AttackDaoJDBI attackDaoJDBI;
-    private final PokemonAttackDaoJDBI pokemonAttackDaoJDBI;
-
     private final PokemonDaoHibernate pokemonDaoHibernate;
-
-    private Map<Integer, String> typeMap = new HashMap<>();
-    private Map<Integer, AttackDto> attackMap = new HashMap<>();
 
     private final String dataAccessMethod;
 
+    private final PokemonDtoTransformer pokemonDtoTransformer;
 
     public PokemonApiResource(PokemonDaoJDBI pokemonDaoJDBI,
                               PokemonDaoHibernate pokemonDaoHibernate,
-                              TypeDaoJDBI typeDaoJDBI,
-                              AttackDaoJDBI attackDaoJDBI,
-                              PokemonAttackDaoJDBI pokemonAttackDaoJDBI,
+                              PokemonDtoTransformer pokemonDtoTransformer,
                               String dataAccessMethod) {
         this.pokemonDaoJDBI = pokemonDaoJDBI;
         this.pokemonDaoHibernate = pokemonDaoHibernate;
-        this.typeDaoJDBI = typeDaoJDBI;
-        this.attackDaoJDBI = attackDaoJDBI;
-        this.pokemonAttackDaoJDBI = pokemonAttackDaoJDBI;
+        this.pokemonDtoTransformer = pokemonDtoTransformer;
 
         this.dataAccessMethod = dataAccessMethod;
-
-        initializePokemonTypeMap();
-        initializeAttackMap();
-    }
-
-    private void initializePokemonTypeMap() {
-        List<PokemonTypeDto> pokemonDtoList = typeDaoJDBI.fetch();
-        for (PokemonTypeDto pokemonTypeDto : pokemonDtoList) {
-            LOGGER.trace("Inserting data {} into memory", pokemonTypeDto);
-            typeMap.put(pokemonTypeDto.getId(), pokemonTypeDto.getName());
-        }
-        LOGGER.debug("Finished loading pokemon type data from the database into memory");
-    }
-
-    private void initializeAttackMap() {
-        List<AttackDto> attackDtoList = attackDaoJDBI.fetchList();
-        for (AttackDto attackDto : attackDtoList) {
-            LOGGER.trace("Inserted {} into memory map", attackDto);
-            attackMap.put(attackDto.getId(), attackDto);
-        }
-        LOGGER.debug("Finished loading data from the database into memory");
     }
 
 
@@ -118,7 +76,7 @@ public class PokemonApiResource {
         Pokemon pokemon;
         if (dataAccessMethod.equals(DataAccessMethod.JDBI)) {
             PokemonDto pokemonDto = pokemonDaoJDBI.fetch(id);
-            pokemon = new PokemonDtoTransformer().transformDtoToDomain(pokemonDto);
+            pokemon = pokemonDtoTransformer.transformDtoToDomain(pokemonDto);
         } else if (dataAccessMethod.equals(DataAccessMethod.HIBERNATE)) {
             pokemon = PokemonEntityPokemonModelTransformer.getModelFromEntity(pokemonDaoHibernate.fetch(id));
         } else {
@@ -199,66 +157,5 @@ public class PokemonApiResource {
         return Response.created(UriBuilder.fromResource(PokemonApiResource.class).build(id)).build();
     }
 
-    private Type getTypeById(int id) {
-        String pokemonType = typeMap.get(id);
-        LOGGER.debug("Trying to get pokemon type for id: {}, {}", id, pokemonType);
-        return Type.valueOf(pokemonType);
-    }
-
-    private List<Integer> fetchListOfPokemonAttacks(int pokemonId) {
-        LOGGER.info("Fetching list of pokemon attacks");
-        List<Integer> attackIds = new ArrayList<>();
-        List<PokemonAttackDto> pokemonAttackDtos = pokemonAttackDaoJDBI.fetch(pokemonId);
-        for (PokemonAttackDto pokemonAttackDto : pokemonAttackDtos) {
-            attackIds.add(pokemonAttackDto.getAttackId());
-        }
-        LOGGER.debug("Fetched list of pokemon attack ids: {}", attackIds);
-        return attackIds;
-    }
-
-    private class PokemonDtoTransformer {
-
-        public Pokemon transformDtoToDomain(PokemonDto pokemonDto) {
-            Pokemon pokemon = new Pokemon();
-            pokemon.setId(pokemonDto.getId());
-            pokemon.setName(pokemonDto.getName());
-            pokemon.setHitPoints(pokemonDto.getHitPoints());
-            pokemon.setCombatPower(pokemonDto.getCombatPower());
-            pokemon.setType(transformType(pokemonDto.getPokemonTypeId()));
-            pokemon.setAttacks(transformAttacks(pokemonDto));
-            return pokemon;
-        }
-
-        private Type transformType(int typeId) {
-            return getTypeById(typeId);
-        }
-
-        private List<Attack> transformAttacks(PokemonDto pokemonDto) {
-            List<Integer> attackIds = fetchListOfPokemonAttacks(pokemonDto.getId());
-            List<Attack> attacks = new ArrayList<>();
-            for (Integer attackId : attackIds) {
-                LOGGER.debug("Getting list of attacks for pokemon with id: {}", pokemonDto.getId());
-                AttackDto attackDto = attackMap.get(attackId);
-                Attack attack = new AttackDtoTransformer().transformDtoToDomain(attackDto);
-                attacks.add(attack);
-            }
-            LOGGER.debug("Got pokemon attacks {} for pokemon with id: {}", attacks, pokemonDto.getId());
-            return attacks;
-        }
-    }
-
-
-    private class AttackDtoTransformer {
-
-        public Attack transformDtoToDomain(AttackDto attackDto) {
-            Attack attack = new Attack();
-            attack.setName(attackDto.getAttackName());
-            attack.setPower(attackDto.getPower());
-            attack.setAccuracy(attackDto.getAccuracy());
-            attack.setType(getTypeById(attackDto.getType()));
-            return attack;
-        }
-
-    }
 
 }

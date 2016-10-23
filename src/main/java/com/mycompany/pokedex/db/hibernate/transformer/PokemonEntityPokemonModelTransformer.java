@@ -19,6 +19,7 @@ public final class PokemonEntityPokemonModelTransformer {
         pokemon.setName(pokemonEntity.getName());
         pokemon.setHitPoints(pokemonEntity.getHitPoints());
         pokemon.setCombatPower(pokemonEntity.getCombatPower());
+        pokemon.setType(PokemonTypeEntityPokemonTypeTransformer.getModelFromEntity(pokemonEntity.getPokemonType()));
         pokemon.setAttacks(AttackEntityAttackModelTransformer.getModelListFromEntitySet(pokemonEntity.getAttacks()));
         return pokemon;
     }
@@ -29,6 +30,7 @@ public final class PokemonEntityPokemonModelTransformer {
         pokemonEntity.setName(pokemon.getName());
         pokemonEntity.setHitPoints(pokemon.getHitPoints());
         pokemonEntity.setCombatPower(pokemon.getCombatPower());
+        pokemonEntity.setPokemonType(PokemonTypeEntityPokemonTypeTransformer.getEntityFromModel(pokemon.getType()));
         pokemonEntity.setAttacks(AttackEntityAttackModelTransformer.getEntitySetFromModelList(pokemon.getAttacks()));
         return pokemonEntity;
     }

@@ -10,9 +10,14 @@ import com.mycompany.pokedex.db.hibernate.entity.PokemonTypeEntity;
 
 public class PokemonTypeEntityPokemonTypeTransformer {
 
+    public static Type getModelFromEntity(PokemonTypeEntity pokemonTypeEntity) {
+        return Type.valueOf(pokemonTypeEntity.getName());
+    }
+
     public static PokemonTypeEntity getEntityFromModel(Type type) {
         PokemonTypeEntity pokemonTypeEntity = new PokemonTypeEntity();
         pokemonTypeEntity.setName(type.name());
         return pokemonTypeEntity;
     }
+
 }
