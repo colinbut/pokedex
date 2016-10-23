@@ -1,3 +1,6 @@
+# can be hibernate or jdbi
+dataAccess: hibernate
+
 server:
   type: simple
   rootPath: /api/*

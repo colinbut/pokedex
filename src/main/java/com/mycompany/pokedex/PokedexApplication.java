@@ -92,7 +92,7 @@ public class PokedexApplication extends Application<PokedexConfiguration> {
 
         // register application resources!
         // manual Dependency Injection (for now at least)
-        environment.jersey().register(new PokemonApiResource(pokemonDaoJDBI, pokemonDaoHibernate, typeDaoJDBI, attackDaoJDBI, pokemonAttackDaoJDBI));
+        environment.jersey().register(new PokemonApiResource(pokemonDaoJDBI, pokemonDaoHibernate, typeDaoJDBI, attackDaoJDBI, pokemonAttackDaoJDBI, configuration.getDataAccess()));
         environment.jersey().register(new PokemonViewResource(pokemonDaoJDBI, pokemonDaoHibernate));
     }
 

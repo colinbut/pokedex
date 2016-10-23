@@ -10,10 +10,12 @@ import com.codahale.metrics.annotation.Metered;
 import com.codahale.metrics.annotation.Timed;
 import com.mycompany.pokedex.api.PokemonRepresentation;
 import com.mycompany.pokedex.converters.PokemonRepresentationDomainConverter;
+import com.mycompany.pokedex.core.constants.DataAccessMethod;
 import com.mycompany.pokedex.core.domain.Attack;
 import com.mycompany.pokedex.core.domain.Pokemon;
 import com.mycompany.pokedex.core.domain.Type;
 import com.mycompany.pokedex.db.hibernate.dao.PokemonDaoHibernate;
+import com.mycompany.pokedex.db.hibernate.transformer.PokemonEntityPokemonModelTransformer;
 import com.mycompany.pokedex.db.jdbi.AttackDaoJDBI;
 import com.mycompany.pokedex.db.jdbi.PokemonAttackDaoJDBI;
 import com.mycompany.pokedex.db.jdbi.PokemonDaoJDBI;
@@ -64,17 +66,22 @@ public class PokemonApiResource {
     private Map<Integer, String> typeMap = new HashMap<>();
     private Map<Integer, AttackDto> attackMap = new HashMap<>();
 
+    private final String dataAccessMethod;
+
 
     public PokemonApiResource(PokemonDaoJDBI pokemonDaoJDBI,
                               PokemonDaoHibernate pokemonDaoHibernate,
                               TypeDaoJDBI typeDaoJDBI,
                               AttackDaoJDBI attackDaoJDBI,
-                              PokemonAttackDaoJDBI pokemonAttackDaoJDBI) {
+                              PokemonAttackDaoJDBI pokemonAttackDaoJDBI,
+                              String dataAccessMethod) {
         this.pokemonDaoJDBI = pokemonDaoJDBI;
         this.pokemonDaoHibernate = pokemonDaoHibernate;
         this.typeDaoJDBI = typeDaoJDBI;
         this.attackDaoJDBI = attackDaoJDBI;
         this.pokemonAttackDaoJDBI = pokemonAttackDaoJDBI;
+
+        this.dataAccessMethod = dataAccessMethod;
 
         initializePokemonTypeMap();
         initializeAttackMap();
@@ -108,12 +115,21 @@ public class PokemonApiResource {
     public PokemonRepresentation getPokemon(@PathParam("id") int id) {
         LOGGER.info("Retrieving pokemon data for pokemon with pokemon id: {}", id);
 
-        PokemonDto pokemonDto = pokemonDaoJDBI.fetch(id);
-        Pokemon pokemon = new PokemonDtoTransformer().transformDtoToDomain(pokemonDto);
+        Pokemon pokemon;
+        if (dataAccessMethod.equals(DataAccessMethod.JDBI)) {
+            PokemonDto pokemonDto = pokemonDaoJDBI.fetch(id);
+            pokemon = new PokemonDtoTransformer().transformDtoToDomain(pokemonDto);
+        } else if (dataAccessMethod.equals(DataAccessMethod.HIBERNATE)) {
+            pokemon = PokemonEntityPokemonModelTransformer.getModelFromEntity(pokemonDaoHibernate.fetch(id));
+        } else {
+            LOGGER.error("Unknown data access method - server configuration error");
+            throw new WebApplicationException(Response.Status.INTERNAL_SERVER_ERROR);
+        }
 
         if (pokemon == null) {
             throw new WebApplicationException(Response.Status.NOT_FOUND);
         }
+
         LOGGER.debug("Got pokemon {} from the PokemonService", pokemon);
         PokemonRepresentation pokemonRepresentation = PokemonRepresentationDomainConverter.asRepresentation(pokemon);
         LOGGER.info("Retrieved pokemon data {} for pokemon with id: {}", pokemonRepresentation, id);
@@ -128,7 +144,16 @@ public class PokemonApiResource {
     public Response addPokemon(@PathParam("id") int id, @NotNull @Valid PokemonRepresentation pokemonRepresentation) {
         LOGGER.info("Adding pokemon {}", pokemonRepresentation);
         Pokemon pokemon = PokemonRepresentationDomainConverter.asDomain(pokemonRepresentation);
-        pokemonDaoJDBI.insert(pokemon.getName(), pokemon.getHitPoints(), pokemon.getCombatPower(), 1);
+
+        if (dataAccessMethod.equals(DataAccessMethod.JDBI)) {
+            pokemonDaoJDBI.insert(pokemon.getName(), pokemon.getHitPoints(), pokemon.getCombatPower(), 1);
+        } else if (dataAccessMethod.equals(DataAccessMethod.HIBERNATE)) {
+            pokemonDaoHibernate.insert(PokemonEntityPokemonModelTransformer.getEntityFromModel(pokemon));
+        } else {
+            LOGGER.error("Unknown data access method - server configuration error");
+            throw new WebApplicationException(Response.Status.INTERNAL_SERVER_ERROR);
+        }
+
         LOGGER.info("Successfully added new pokemon: {}", id);
         return Response.created(UriBuilder.fromResource(PokemonApiResource.class).build(id)).build();
     }
@@ -140,6 +165,16 @@ public class PokemonApiResource {
     @UnitOfWork
     public Response updatePokemon(@PathParam("id") int id, @NotNull @Valid PokemonRepresentation pokemonRepresentation) {
         Pokemon pokemon = PokemonRepresentationDomainConverter.asDomain(pokemonRepresentation);
+
+        if (dataAccessMethod.equals(DataAccessMethod.JDBI)) {
+
+        } else if (dataAccessMethod.equals(DataAccessMethod.HIBERNATE))  {
+            pokemonDaoHibernate.update(PokemonEntityPokemonModelTransformer.getEntityFromModel(pokemon));
+        } else {
+            LOGGER.error("Unknown data access method - server configuration error");
+            throw new WebApplicationException(Response.Status.INTERNAL_SERVER_ERROR);
+        }
+
         return Response.created(UriBuilder.fromResource(PokemonApiResource.class).build(id)).build();
     }
 
@@ -150,7 +185,16 @@ public class PokemonApiResource {
     @UnitOfWork
     public Response deletePokemon(@PathParam("id") int id) {
         LOGGER.info("Deleting pokemon: {}", id);
-        pokemonDaoJDBI.delete(id);
+
+        if (dataAccessMethod.equals(DataAccessMethod.JDBI)) {
+            pokemonDaoJDBI.delete(id);
+        } else if (dataAccessMethod.equals(DataAccessMethod.HIBERNATE))  {
+            pokemonDaoHibernate.delete(id);
+        } else {
+            LOGGER.error("Unknown data access method - server configuration error");
+            throw new WebApplicationException(Response.Status.INTERNAL_SERVER_ERROR);
+        }
+
         LOGGER.info("Successfully deleted pokemon: {}", id);
         return Response.created(UriBuilder.fromResource(PokemonApiResource.class).build(id)).build();
     }

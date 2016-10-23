@@ -3,11 +3,15 @@ package com.mycompany.pokedex;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.dropwizard.Configuration;
 import io.dropwizard.db.DataSourceFactory;
+import org.hibernate.validator.constraints.NotEmpty;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
 public class PokedexConfiguration extends Configuration {
+
+    @NotEmpty
+    private String dataAccess = "JDBI";
 
     @NotNull
     @Valid
@@ -16,6 +20,16 @@ public class PokedexConfiguration extends Configuration {
 
     public DataSourceFactory getDatabase() {
         return database;
+    }
+
+    @JsonProperty
+    public String getDataAccess() {
+        return dataAccess;
+    }
+
+    @JsonProperty
+    public void setDataAccess(String dataAccess) {
+        this.dataAccess = dataAccess;
     }
 
 }
