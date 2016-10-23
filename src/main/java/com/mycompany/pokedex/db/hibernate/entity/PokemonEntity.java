@@ -38,6 +38,10 @@ public class PokemonEntity {
         return id;
     }
 
+    public void setId(int id) {
+        this.id = id;
+    }
+
     @Column(name = "name", length = 25)
     public String getName() {
         return name;

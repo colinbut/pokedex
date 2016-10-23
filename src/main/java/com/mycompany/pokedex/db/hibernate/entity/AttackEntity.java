@@ -22,7 +22,7 @@ import java.util.Set;
 @NamedQueries( {
     @NamedQuery(
         name = "findAllAttacks",
-        query = "from Attack a"
+        query = "from AttackEntity a"
     )
 })
 @Entity
@@ -42,6 +42,10 @@ public class AttackEntity {
     @Column(name = "id")
     public int getId() {
         return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     @Column(name = "name")

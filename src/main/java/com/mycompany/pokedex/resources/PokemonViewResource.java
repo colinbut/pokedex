@@ -6,6 +6,8 @@
 package com.mycompany.pokedex.resources;
 
 import com.mycompany.pokedex.core.service.PokemonService;
+import com.mycompany.pokedex.db.hibernate.dao.PokemonDaoHibernate;
+import com.mycompany.pokedex.db.hibernate.transformer.PokemonEntityPokemonModelTransformer;
 import com.mycompany.pokedex.view.PokemonView;
 
 import javax.ws.rs.GET;
@@ -20,14 +22,18 @@ public class PokemonViewResource {
 
     private final PokemonService pokemonService;
 
-    public PokemonViewResource(PokemonService pokemonService){
+    private final PokemonDaoHibernate pokemonDaoHibernate;
+
+    public PokemonViewResource(PokemonService pokemonService, PokemonDaoHibernate pokemonDaoHibernate){
         this.pokemonService = pokemonService;
+        this.pokemonDaoHibernate = pokemonDaoHibernate;
     }
 
 
     @GET
     public PokemonView getPokemon(@PathParam("id") int id) {
-        return new PokemonView(pokemonService.getPokemon(id));
+        //return new PokemonView(pokemonService.getPokemon(id));
+        return new PokemonView(PokemonEntityPokemonModelTransformer.getModelFromEntity(pokemonDaoHibernate.fetch(id)));
     }
 
 
