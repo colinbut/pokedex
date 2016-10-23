@@ -76,11 +76,11 @@ public class PokemonApiResource {
         this.attackDaoJDBI = attackDaoJDBI;
         this.pokemonAttackDaoJDBI = pokemonAttackDaoJDBI;
 
-        intiializePokemonTypeMap();
+        initializePokemonTypeMap();
         initializeAttackMap();
     }
 
-    private void intiializePokemonTypeMap() {
+    private void initializePokemonTypeMap() {
         List<PokemonTypeDto> pokemonDtoList = typeDaoJDBI.fetch();
         for (PokemonTypeDto pokemonTypeDto : pokemonDtoList) {
             LOGGER.trace("Inserting data {} into memory", pokemonTypeDto);
