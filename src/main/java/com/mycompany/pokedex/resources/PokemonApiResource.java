@@ -10,9 +10,19 @@ import com.codahale.metrics.annotation.Metered;
 import com.codahale.metrics.annotation.Timed;
 import com.mycompany.pokedex.api.PokemonRepresentation;
 import com.mycompany.pokedex.converters.PokemonRepresentationDomainConverter;
+import com.mycompany.pokedex.core.domain.Attack;
 import com.mycompany.pokedex.core.domain.Pokemon;
-import com.mycompany.pokedex.core.service.PokemonService;
+import com.mycompany.pokedex.core.domain.Type;
 import com.mycompany.pokedex.db.hibernate.dao.PokemonDaoHibernate;
+import com.mycompany.pokedex.db.jdbi.AttackDaoJDBI;
+import com.mycompany.pokedex.db.jdbi.PokemonAttackDaoJDBI;
+import com.mycompany.pokedex.db.jdbi.PokemonDaoJDBI;
+import com.mycompany.pokedex.db.jdbi.TypeDaoJDBI;
+import com.mycompany.pokedex.db.jdbi.dto.AttackDto;
+import com.mycompany.pokedex.db.jdbi.dto.PokemonAttackDto;
+import com.mycompany.pokedex.db.jdbi.dto.PokemonDto;
+import com.mycompany.pokedex.db.jdbi.dto.PokemonTypeDto;
+import io.dropwizard.hibernate.UnitOfWork;
 import io.dropwizard.jersey.caching.CacheControl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,6 +41,10 @@ import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriBuilder;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 @Path("/pokemon/{id}")
@@ -40,14 +54,42 @@ public class PokemonApiResource {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(PokemonApiResource.class);
 
-    private final PokemonService pokemonService;
-
+    private final PokemonDaoJDBI pokemonDaoJDBI;
     private final PokemonDaoHibernate pokemonDaoHibernate;
 
+    private final TypeDaoJDBI typeDaoJDBI;
+    private Map<Integer, String> typeMap = new HashMap<>();
 
-    public PokemonApiResource(PokemonService pokemonService, PokemonDaoHibernate pokemonDaoHibernate) {
-        this.pokemonService = pokemonService;
+    private final AttackDaoJDBI attackDaoJDBI;
+    private Map<Integer, AttackDto> attackMap = new HashMap<>();
+
+    private final PokemonAttackDaoJDBI pokemonAttackDaoJDBI;
+
+
+    public PokemonApiResource(PokemonDaoJDBI pokemonDaoJDBI,
+                              PokemonDaoHibernate pokemonDaoHibernate,
+                              TypeDaoJDBI typeDaoJDBI,
+                              AttackDaoJDBI attackDaoJDBI,
+                              PokemonAttackDaoJDBI pokemonAttackDaoJDBI) {
+        this.pokemonDaoJDBI = pokemonDaoJDBI;
         this.pokemonDaoHibernate = pokemonDaoHibernate;
+        this.typeDaoJDBI = typeDaoJDBI;
+        this.attackDaoJDBI = attackDaoJDBI;
+        this.pokemonAttackDaoJDBI = pokemonAttackDaoJDBI;
+
+        List<PokemonTypeDto> pokemonDtoList = typeDaoJDBI.fetch();
+        for (PokemonTypeDto pokemonTypeDto : pokemonDtoList) {
+            LOGGER.trace("Inserting data {} into memory", pokemonTypeDto);
+            typeMap.put(pokemonTypeDto.getId(), pokemonTypeDto.getName());
+        }
+        LOGGER.debug("Finished loading data from the database into memory");
+
+        List<AttackDto> attackDtoList = attackDaoJDBI.fetchList();
+        for (AttackDto attackDto : attackDtoList) {
+            LOGGER.trace("Inserted {} into memory map", attackDto);
+            attackMap.put(attackDto.getId(), attackDto);
+        }
+        LOGGER.debug("Finished loading data from the database into memory");
     }
 
 
@@ -56,9 +98,13 @@ public class PokemonApiResource {
     @Metered(name = "showAll-metered-get")
     @ExceptionMetered
     @CacheControl(maxAge = 12, maxAgeUnit = TimeUnit.HOURS)
+    @UnitOfWork
     public PokemonRepresentation getPokemon(@PathParam("id") int id) {
         LOGGER.info("Retrieving pokemon data for pokemon with pokemon id: {}", id);
-        Pokemon pokemon = pokemonService.getPokemon(id);
+
+        PokemonDto pokemonDto = pokemonDaoJDBI.fetch(id);
+        Pokemon pokemon = new PokemonDtoTransformer().transformDtoToDomain(pokemonDto);
+
         if (pokemon == null) {
             throw new WebApplicationException(Response.Status.NOT_FOUND);
         }
@@ -75,7 +121,7 @@ public class PokemonApiResource {
     public Response addPokemon(@PathParam("id") int id, @NotNull @Valid PokemonRepresentation pokemonRepresentation) {
         LOGGER.info("Adding pokemon {}", pokemonRepresentation);
         Pokemon pokemon = PokemonRepresentationDomainConverter.asDomain(pokemonRepresentation);
-        pokemonService.saveNewPokemon(pokemon);
+        pokemonDaoJDBI.insert(pokemon.getName(), pokemon.getHitPoints(), pokemon.getCombatPower(), 1);
         LOGGER.info("Successfully added new pokemon: {}", id);
         return Response.created(UriBuilder.fromResource(PokemonApiResource.class).build(id)).build();
     }
@@ -86,7 +132,6 @@ public class PokemonApiResource {
     @ExceptionMetered
     public Response updatePokemon(@PathParam("id") int id, @NotNull @Valid PokemonRepresentation pokemonRepresentation) {
         Pokemon pokemon = PokemonRepresentationDomainConverter.asDomain(pokemonRepresentation);
-        pokemonService.updatePokemon(pokemon);
         return Response.created(UriBuilder.fromResource(PokemonApiResource.class).build(id)).build();
     }
 
@@ -96,9 +141,74 @@ public class PokemonApiResource {
     @ExceptionMetered
     public Response deletePokemon(@PathParam("id") int id) {
         LOGGER.info("Deleting pokemon: {}", id);
-        pokemonService.deletePokemon(id);
+        pokemonDaoJDBI.delete(id);
         LOGGER.info("Successfully deleted pokemon: {}", id);
         return Response.created(UriBuilder.fromResource(PokemonApiResource.class).build(id)).build();
+    }
+
+    private Type getTypeById(int id) {
+        String pokemonType = typeMap.get(id);
+        LOGGER.debug("Trying to get pokemon type for id: {}, {}", id, pokemonType);
+        return Type.valueOf(pokemonType);
+    }
+
+    private List<Integer> fetchListOfPokemonAttacks(int pokemonId) {
+        LOGGER.info("Fetching list of pokemon attacks");
+        List<Integer> attackIds = new ArrayList<>();
+        List<PokemonAttackDto> pokemonAttackDtos = pokemonAttackDaoJDBI.fetch(pokemonId);
+        for (PokemonAttackDto pokemonAttackDto : pokemonAttackDtos) {
+            attackIds.add(pokemonAttackDto.getAttackId());
+        }
+        LOGGER.debug("Fetched list of pokemon attack ids: {}", attackIds);
+        return attackIds;
+    }
+
+    private class PokemonDtoTransformer {
+
+        public Pokemon transformDtoToDomain(PokemonDto pokemonDto) {
+            Pokemon pokemon = new Pokemon();
+            pokemon.setId(pokemonDto.getId());
+            pokemon.setName(pokemonDto.getName());
+            pokemon.setHitPoints(pokemonDto.getHitPoints());
+            pokemon.setCombatPower(pokemonDto.getCombatPower());
+            pokemon.setType(transformType(pokemonDto.getPokemonTypeId()));
+            pokemon.setAttacks(transformAttacks(pokemonDto));
+            return pokemon;
+        }
+
+        private Type transformType(int typeId) {
+            return getTypeById(typeId);
+        }
+
+        private List<Attack> transformAttacks(PokemonDto pokemonDto) {
+            List<Integer> attackIds = fetchListOfPokemonAttacks(pokemonDto.getId());
+            List<Attack> attacks = new ArrayList<>();
+            for (Integer attackId : attackIds) {
+                LOGGER.debug("Getting list of attacks for pokemon with id: {}", pokemonDto.getId());
+                AttackDto attackDto = attackMap.get(attackId);
+                Attack attack = new AttackDtoTransformer().transformDtoToDomain(attackDto);
+                attacks.add(attack);
+            }
+            LOGGER.debug("Got pokemon attacks {} for pokemon with id: {}", attacks, pokemonDto.getId());
+            return attacks;
+        }
+    }
+
+    /**
+     * Making this an inner class right now because this is the only usage
+     * place at the moment
+     */
+    private class AttackDtoTransformer {
+
+        public Attack transformDtoToDomain(AttackDto attackDto) {
+            Attack attack = new Attack();
+            attack.setName(attackDto.getAttackName());
+            attack.setPower(attackDto.getPower());
+            attack.setAccuracy(attackDto.getAccuracy());
+            attack.setType(getTypeById(attackDto.getType()));
+            return attack;
+        }
+
     }
 
 }

@@ -1,13 +1,6 @@
 package com.mycompany.pokedex;
 
-import com.mycompany.pokedex.core.service.AttackService;
-import com.mycompany.pokedex.core.service.AttackServiceImpl;
-import com.mycompany.pokedex.core.service.PokemonAttackService;
-import com.mycompany.pokedex.core.service.PokemonAttackServiceImpl;
-import com.mycompany.pokedex.core.service.PokemonService;
-import com.mycompany.pokedex.core.service.PokemonServiceImpl;
-import com.mycompany.pokedex.core.service.TypeService;
-import com.mycompany.pokedex.core.service.TypeServiceImpl;
+
 import com.mycompany.pokedex.db.hibernate.dao.AttackDaoHibernate;
 import com.mycompany.pokedex.db.hibernate.dao.PokemonDaoHibernate;
 import com.mycompany.pokedex.db.jdbi.AttackDaoJDBI;
@@ -19,7 +12,6 @@ import com.mycompany.pokedex.db.hibernate.entity.PokemonEntity;
 import com.mycompany.pokedex.db.hibernate.entity.PokemonTypeEntity;
 import com.mycompany.pokedex.health.ApplicationHealthCheck;
 import com.mycompany.pokedex.health.DatabaseHealthCheck;
-import com.mycompany.pokedex.health.PokemonServiceHealthCheck;
 import com.mycompany.pokedex.resources.PokemonApiResource;
 import com.mycompany.pokedex.resources.PokemonViewResource;
 import io.dropwizard.Application;
@@ -83,7 +75,7 @@ public class PokedexApplication extends Application<PokedexConfiguration> {
         final DBI dbi = dbiFactory.build(environment, configuration.getDatabase(), "mysql");
 
         // initialise (load) JDBI DAOs
-        final PokemonDaoJDBI pokemonDao = dbi.onDemand(PokemonDaoJDBI.class);
+        final PokemonDaoJDBI pokemonDaoJDBI = dbi.onDemand(PokemonDaoJDBI.class);
         final TypeDaoJDBI typeDaoJDBI = dbi.onDemand(TypeDaoJDBI.class);
         final AttackDaoJDBI attackDaoJDBI = dbi.onDemand(AttackDaoJDBI.class);
         final PokemonAttackDaoJDBI pokemonAttackDaoJDBI = dbi.onDemand(PokemonAttackDaoJDBI.class);
@@ -92,22 +84,16 @@ public class PokedexApplication extends Application<PokedexConfiguration> {
         final PokemonDaoHibernate pokemonDaoHibernate = new PokemonDaoHibernate(hibernateBundle.getSessionFactory());
         final AttackDaoHibernate attackDaoHibernate = new AttackDaoHibernate(hibernateBundle.getSessionFactory()); // don't think we need this
 
-        // manual Dependency Injection (for now at least)
-        final TypeService typeService = new TypeServiceImpl(typeDaoJDBI);
-        final AttackService attackService = new AttackServiceImpl(attackDaoJDBI, typeService);
-        final PokemonAttackService pokemonAttackService = new PokemonAttackServiceImpl(pokemonAttackDaoJDBI);
-        final PokemonService pokemonService = new PokemonServiceImpl(pokemonDao, attackService, typeService, pokemonAttackService);
-
         environment.jersey().setUrlPattern("/api/*");
 
         // register healthchecks!
-        environment.healthChecks().register("pokemon-service", new PokemonServiceHealthCheck(pokemonService));
         environment.healthChecks().register("database", new DatabaseHealthCheck(dbi, configuration.getDatabase().getValidationQuery()));
         environment.healthChecks().register("application", new ApplicationHealthCheck());
 
         // register application resources!
-        environment.jersey().register(new PokemonApiResource(pokemonService, pokemonDaoHibernate));
-        environment.jersey().register(new PokemonViewResource(pokemonService, pokemonDaoHibernate));
+        // manual Dependency Injection (for now at least)
+        environment.jersey().register(new PokemonApiResource(pokemonDaoJDBI, pokemonDaoHibernate, typeDaoJDBI, attackDaoJDBI, pokemonAttackDaoJDBI));
+        environment.jersey().register(new PokemonViewResource(pokemonDaoJDBI, pokemonDaoHibernate));
     }
 
 

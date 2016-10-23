@@ -5,9 +5,9 @@
  */
 package com.mycompany.pokedex.resources;
 
-import com.mycompany.pokedex.core.service.PokemonService;
 import com.mycompany.pokedex.db.hibernate.dao.PokemonDaoHibernate;
 import com.mycompany.pokedex.db.hibernate.transformer.PokemonEntityPokemonModelTransformer;
+import com.mycompany.pokedex.db.jdbi.PokemonDaoJDBI;
 import com.mycompany.pokedex.view.PokemonView;
 import io.dropwizard.hibernate.UnitOfWork;
 
@@ -21,12 +21,12 @@ import javax.ws.rs.core.MediaType;
 @Produces(MediaType.TEXT_HTML)
 public class PokemonViewResource {
 
-    private final PokemonService pokemonService;
+    private final PokemonDaoJDBI pokemonDaoJDBI;
 
     private final PokemonDaoHibernate pokemonDaoHibernate;
 
-    public PokemonViewResource(PokemonService pokemonService, PokemonDaoHibernate pokemonDaoHibernate){
-        this.pokemonService = pokemonService;
+    public PokemonViewResource(PokemonDaoJDBI pokemonDaoJDBI, PokemonDaoHibernate pokemonDaoHibernate){
+        this.pokemonDaoJDBI = pokemonDaoJDBI;
         this.pokemonDaoHibernate = pokemonDaoHibernate;
     }
 
@@ -34,7 +34,7 @@ public class PokemonViewResource {
     @GET
     @UnitOfWork
     public PokemonView getPokemon(@PathParam("id") int id) {
-        //return new PokemonView(pokemonService.getPokemon(id));
+        //return new PokemonView(pokemonDaoJDBI.fetch(id));
         return new PokemonView(PokemonEntityPokemonModelTransformer.getModelFromEntity(pokemonDaoHibernate.fetch(id)));
     }
 
