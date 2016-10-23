@@ -77,18 +77,38 @@ Note that 25 is the pokemon index of Pikachu :heart_eyes:
     - Liquibase
     - Freemarker
     - Mustache
+    - Hibernate
 
 ### Dropwizard Modules
 
 - dropwizard-core
 - dropwizard-jdbi
 - dropwizard-migrations
+- dropwizard-assets
 - dropwizard-views-freemarker
 - dropwizard-views-mustache
+- dropwizard-hibernate
 
 ### Database
 
 Uses MySQL database. You will need to have MySQL in your local. Download it from the MySQL website and follow its installation instructions to install it. 
+
+The database configuration details are specified in the pokedex.yaml application configuration file:
+
+```
+database:
+  # the name of your JDBC driver
+  driverClass: com.mysql.jdbc.Driver
+
+  # the username
+  user: root
+
+  # the password
+  password:
+
+  # the JDBC URL
+  url: jdbc:mysql://localhost:3306/pokemon
+```
 
 ### Liquibase
 
@@ -115,8 +135,18 @@ where `--count` tag indicates number of patches to rollback
 Freemarker/Mustache template engine is used to render views of the resources in a nicely representation for display.
 
 
+### Database Access
 
+Provides 2 types of database access. You can either choose JDBI or Hibernate.
 
+you can configure this via the following property in the pokedex.yaml application configuration file:
+
+```
+# can be Hibernate or JDBI
+dataAccess: Hibernate
+```
+
+By default, JDBI is configured if not property not set.
 
 
 
