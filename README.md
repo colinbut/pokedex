@@ -20,6 +20,10 @@ mvn clean package
 
 ### Running
 
+Navigate to the application project directory. Depending on the type of setup,
+1. for single module - go to default/ and run application from this folder
+2. for multi-module - go to multi-module/project-application/ and run application from this folder
+
 ```
 java -jar target/pokedex-1.0-SNAPSHOT.jar server src/main/resources/pokedex.yaml
 ```
@@ -27,7 +31,7 @@ java -jar target/pokedex-1.0-SNAPSHOT.jar server src/main/resources/pokedex.yaml
 note that:
 
 `server` is the command to indicate starting this application as a HTTP Server. (Jetty HTTP Server is started up)
-`src/main/resources/pokedex.yaml` is the application configuration file in yaml (yml) format
+`src/main/resources/pokedex.yaml` is the application configuration file in yaml (yml) format and this reside under the appropriate project folder
 
 ### Hitting the endpoint
 
