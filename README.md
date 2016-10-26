@@ -20,7 +20,8 @@ mvn clean package
 
 ### Running
 
-Navigate to the application project directory. Depending on the type of setup,
+Navigate to the application project directory. Depending on the type of setup, 
+
 1. for single module - go to default/ and run application from this folder
 2. for multi-module - go to multi-module/project-application/ and run application from this folder
 
