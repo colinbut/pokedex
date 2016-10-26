@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd">
+
+    <changeSet id="1" author="Colin">
+        <comment>Drop existing tables</comment>
+        <sql>
+            DROP TABLE IF EXISTS POKEMON_ATTACK;
+            DROP TABLE IF EXISTS POKEMON;
+            DROP TABLE IF EXISTS ATTACK;
+            DROP TABLE IF EXISTS POKEMON_TYPE;
+        </sql>
+    </changeSet>
+
+    <changeSet id="2" author="Colin">
+        <comment>Create Pokemon Type Table</comment>
+        <createTable tableName="POKEMON_TYPE">
+            <column name="id" type="INTEGER" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="name" type="VARCHAR(25)" />
+        </createTable>
+        <rollback>
+            <dropTable tableName="POKEMON_TYPE"/>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="3" author="Colin">
+        <comment>Create Attack Table</comment>
+        <createTable tableName="ATTACK">
+            <column name="id" type="INTEGER" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="name" type="VARCHAR(255)" />
+            <column name="power" type="INTEGER" />
+            <column name="accuracy" type="INTEGER" />
+            <column name="type_id" type="INTEGER">
+                <constraints references="POKEMON_TYPE(id)" foreignKeyName="FK_ATTACK_POKEMON_TYPE_ID" />
+            </column>
+        </createTable>
+        <rollback>
+            <dropTable tableName="ATTACK"/>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="4" author="Colin">
+        <comment>Create Pokemon Table</comment>
+        <createTable tableName="POKEMON">
+            <column name="id" type="INTEGER" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="name" type="VARCHAR(25)" />
+            <column name="hit_points" type="INTEGER" />
+            <column name="combat_power" type="INTEGER" />
+            <column name="type_id" type="INTEGER">
+                <constraints references="POKEMON_TYPE(id)" foreignKeyName="FK_POKEMON_POKEMON_TYPE_ID" />
+            </column>
+        </createTable>
+        <rollback>
+            <dropTable tableName="POKEMON"/>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="5" author="Colin">
+        <comment>Create Pokemon Attack Table</comment>
+        <createTable tableName="POKEMON_ATTACK">
+            <column name="pokemon_id" type="INTEGER">
+                <constraints references="POKEMON(id)" foreignKeyName="FK_POKEMON_ID" />
+            </column>
+            <column name="attack_id" type="INTEGER">
+                <constraints references="ATTACK(id)" foreignKeyName="FK_ATTACK_ID" />
+            </column>
+        </createTable>
+        <rollback>
+            <dropTable tableName="POKEMON_ATTACK"/>
+        </rollback>
+    </changeSet>
+
+</databaseChangeLog>
