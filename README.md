@@ -7,8 +7,7 @@
 This is an application developed using Dropwizard. It represents the famous 'Pokedex' which is an index of Pokemons (Pocket Monsters). 
 This pokedex is the original pokedex consisting of 150 pokemon. Mew the 151st is therefore not included.
 
-![Image of Pokemon]
-(etc/pokemon.jpg)
+![Image of Pokemon](etc/pokemon.jpg)
 
 What this web application does is that you hit the specified endpoint and it will return the pokemon data containing its name, combat power, hit points, list of attacks in JSON format. You give the id of the pokemon you want to retreive and it will return the pokemon data by the given id.
 
